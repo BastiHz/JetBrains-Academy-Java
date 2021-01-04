@@ -14,3 +14,6 @@ content:
 - Avoid NPE
 - Only true or false
 - Safe converting
+- Basic calculator
+- Parameters and their values
+- Get the game mode
