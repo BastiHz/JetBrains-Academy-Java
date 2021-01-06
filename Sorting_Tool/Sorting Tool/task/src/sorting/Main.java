@@ -3,12 +3,18 @@ package sorting;
 import java.util.*;
 
 public class Main {
-    static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(final String[] args) {
+        List<String> argList = Arrays.asList(args);
+        if (argList.contains("-sortIntegers")) {
+            sortIntegers();
+            return;
+        }
+
         String mode;
-        if (args.length == 2 && "-dataType".equals(args[0])) {
-            mode = args[1];
+        if (argList.contains("-dataType")) {
+            mode = argList.get(argList.indexOf("-dataType") + 1);
         } else {
             mode = "word";
         }
@@ -25,7 +31,7 @@ public class Main {
         }
     }
 
-    public static void processWords() {
+    private static void processWords() {
         int total = 0;
         int longestLength = 0;
         ArrayList<String> longestWords = new ArrayList<>();
@@ -50,7 +56,7 @@ public class Main {
         System.out.printf("(%d time(s), %.0f%%).", longestWords.size(), percentage);
     }
 
-    public static void processLongs() {
+    private static void processLongs() {
         int total = 0;
         int nBiggest = 0;
         long biggest = Long.MIN_VALUE;
@@ -69,7 +75,7 @@ public class Main {
         System.out.printf("The greatest number: %d (%d time(s), %.0f%%).", biggest, nBiggest, percentage);
     }
 
-    public static void processLines() {
+    private static void processLines() {
         int total = 0;
         int longestLength = 0;
         ArrayList<String> longestLines = new ArrayList<>();
@@ -92,5 +98,18 @@ public class Main {
         }
         double percentage = (double) longestLines.size() / total * 100;
         System.out.printf("(%d time(s), %.0f%%).", longestLines.size(), percentage);
+    }
+
+    private static void sortIntegers() {
+        ArrayList<Integer> list = new ArrayList<>();
+        while (scanner.hasNext()) {
+            list.add(scanner.nextInt());
+        }
+        Collections.sort(list);
+        System.out.printf("Total numbers: %d.\n", list.size());
+        System.out.print("Sorted data:");
+        for (int x : list) {
+            System.out.print(" " + x);
+        }
     }
 }
