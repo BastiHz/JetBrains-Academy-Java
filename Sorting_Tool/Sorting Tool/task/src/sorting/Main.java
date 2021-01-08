@@ -3,113 +3,144 @@ package sorting;
 import java.util.*;
 
 public class Main {
-    private static final Scanner scanner = new Scanner(System.in);
+    private enum SortingType {NATURAL, BY_COUNT};
+    private enum DataType {WORD, LINE, LONG};
+    private static SortingType sType = SortingType.NATURAL;
+    private static DataType dType = DataType.WORD;
 
     public static void main(final String[] args) {
-        List<String> argList = Arrays.asList(args);
-        if (argList.contains("-sortIntegers")) {
-            sortIntegers();
-            return;
-        }
-
-        String mode;
-        if (argList.contains("-dataType")) {
-            mode = argList.get(argList.indexOf("-dataType") + 1);
+        readArgs(Arrays.asList(args));
+        List<String> rawData = readInput();
+        if (sType == SortingType.NATURAL) {
+            sortedAndPrintNatural(rawData);
         } else {
-            mode = "word";
-        }
-        switch (mode) {
-            case "word":
-                processWords();
-                break;
-            case "long":
-                processLongs();
-                break;
-            case "line":
-                processLines();
-                break;
+            sortedAndPrintByCount(rawData);
         }
     }
 
-    private static void processWords() {
-        int total = 0;
-        int longestLength = 0;
-        ArrayList<String> longestWords = new ArrayList<>();
-        while (scanner.hasNext()) {
-            String word = scanner.next();
-            total++;
-            if (word.length() > longestLength) {
-                longestLength = word.length();
-                longestWords.clear();
-                longestWords.add(word);
-            } else if (word.length() == longestLength) {
-                longestWords.add(word);
+    private static void readArgs(List<String> argList) {
+        int index = argList.indexOf("-sortingType");
+        if (index > -1) {
+            switch (argList.get(index + 1)) {
+                case "natural":
+                    sType = SortingType.NATURAL;
+                    break;
+                case "byCount":
+                    sType = SortingType.BY_COUNT;
             }
         }
-        System.out.printf("Total words: %d.\n", total);
-        System.out.print("The longest word: ");
-        Collections.sort(longestWords);
-        for (String word : longestWords) {
-            System.out.print(word + " ");
-        }
-        double percentage = (double) longestWords.size() / total * 100;
-        System.out.printf("(%d time(s), %.0f%%).", longestWords.size(), percentage);
-    }
-
-    private static void processLongs() {
-        int total = 0;
-        int nBiggest = 0;
-        long biggest = Long.MIN_VALUE;
-        while (scanner.hasNextLong()) {
-            long number = scanner.nextLong();
-            total++;
-            if (number > biggest) {
-                biggest = number;
-                nBiggest = 1;
-            } else if (number == biggest) {
-                nBiggest++;
+        index = argList.indexOf("-dataType");
+        if (index > -1) {
+            switch (argList.get(index + 1)) {
+                case "word":
+                    dType = DataType.WORD;
+                    break;
+                case "long":
+                    dType = DataType.LONG;
+                    break;
+                case "line":
+                    dType = DataType.LINE;
+                    break;
             }
         }
-        double percentage = (double) nBiggest / total * 100;
-        System.out.printf("Total numbers: %d.\n", total);
-        System.out.printf("The greatest number: %d (%d time(s), %.0f%%).", biggest, nBiggest, percentage);
     }
 
-    private static void processLines() {
-        int total = 0;
-        int longestLength = 0;
-        ArrayList<String> longestLines = new ArrayList<>();
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            total++;
-            if (line.length() > longestLength) {
-                longestLength = line.length();
-                longestLines.clear();
-                longestLines.add(line);
-            } else if (line.length() == longestLength) {
-                longestLines.add(line);
+    private static List<String> readInput() {
+        Scanner scanner = new Scanner(System.in);
+        List<String> data = new ArrayList<>();
+        if (dType == DataType.LINE) {
+            while (scanner.hasNextLine()) {
+                data.add(scanner.nextLine());
+            }
+        } else {
+            while (scanner.hasNext()) {
+                data.add(scanner.next());
             }
         }
-        System.out.printf("Total lines: %d.\n", total);
-        System.out.print("The longest line:\n");
-        Collections.sort(longestLines);
-        for (String line : longestLines) {
-            System.out.printf("%s\n", line);
-        }
-        double percentage = (double) longestLines.size() / total * 100;
-        System.out.printf("(%d time(s), %.0f%%).", longestLines.size(), percentage);
+        return data;
     }
 
-    private static void sortIntegers() {
-        ArrayList<Integer> list = new ArrayList<>();
-        while (scanner.hasNext()) {
-            list.add(scanner.nextInt());
+    private static void printTotal(int total) {
+        String type = "";
+        switch (dType) {
+            case WORD:
+                type = "words";
+                break;
+            case LINE:
+                type = "lines";
+                break;
+            case LONG:
+                type = "numbers";
+                break;
         }
-        Collections.sort(list);
-        System.out.printf("Total numbers: %d.\n", list.size());
-        System.out.print("Sorted data:");
-        for (int x : list) {
-            System.out.print(" " + x);
+        System.out.printf("Total %s: %d.", type, total);
+    }
+
+    private static List<String> sortNumbers(List<String> data) {
+        // This looks bad. Is there a better solution than
+        // casting to long, sorting, and casting back to string?
+
+        List<Long> longList = new ArrayList<>();
+        for (String number : data) {
+            longList.add(Long.valueOf(number));
+        }
+        Collections.sort(longList);
+        List<String> sortedData = new ArrayList<>();
+        for (long number : longList) {
+            sortedData.add(String.valueOf(number));
+        }
+        return sortedData;
+    }
+
+    private static void sortedAndPrintNatural(List<String> data) {
+        printTotal(data.size());
+        String sep = dType == DataType.LINE ? "\n" : " ";
+        System.out.print("\nSorted data:");
+
+        if (dType == DataType.LONG) {
+            data = sortNumbers(data);
+        } else {
+            Collections.sort(data);
+        }
+        for (String x : data) {
+            System.out.print(sep + x);
+        }
+    }
+
+    private static void sortedAndPrintByCount(List<String> data) {
+        HashMap<String, Integer> dataCount = new HashMap<>();
+        for (String key : data) {
+            int count = dataCount.getOrDefault(key, 0);
+            dataCount.put(key, count + 1);
+        }
+        TreeMap<Integer, Set<String>> countData = new TreeMap<>();
+        for (Map.Entry<String, Integer> entry : dataCount.entrySet()) {
+            Integer key = entry.getValue();
+            String value = entry.getKey();
+            Set<String> values = countData.getOrDefault(key, new TreeSet<>());
+            values.add(value);
+            countData.put(key, values);
+        }
+
+        if (dType == DataType.LONG) {
+            for (Map.Entry<Integer, Set<String>> entry : countData.entrySet()) {
+                // Ugh, this is ugly. There must be a better way.
+                Set<String> sortedValues = new LinkedHashSet<>(
+                        sortNumbers(new ArrayList<>(entry.getValue()))
+                );
+                countData.put(entry.getKey(), sortedValues);
+            }
+        }
+
+        int total = data.size();
+        printTotal(total);
+
+        for (Map.Entry<Integer, Set<String>> entry : countData.entrySet()) {
+            int count = entry.getKey();
+            double percentage = (double) count / total * 100;
+            for (String value : entry.getValue()) {
+                System.out.printf("\n%s: %d time(s), %.0f%%", value, count, percentage);
+            }
         }
     }
 }
