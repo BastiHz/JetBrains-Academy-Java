@@ -8,8 +8,10 @@ public class Main {
     private static SortingType sType = SortingType.NATURAL;
     private static DataType dType = DataType.WORD;
 
-    public static void main(final String[] args) {
-        readArgs(Arrays.asList(args));
+    public static void main(String[] args) {
+        if (!readArgs(args)) {
+            return;
+        }
         List<String> rawData = readInput();
         if (sType == SortingType.NATURAL) {
             sortedAndPrintNatural(rawData);
@@ -18,44 +20,81 @@ public class Main {
         }
     }
 
-    private static void readArgs(List<String> argList) {
-        int index = argList.indexOf("-sortingType");
-        if (index > -1) {
-            switch (argList.get(index + 1)) {
-                case "natural":
-                    sType = SortingType.NATURAL;
+    private static boolean readArgs(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            switch (arg) {
+                case "-sortingType":
+                    try {
+                        switch (args[i + 1]) {
+                            case "natural":
+                                sType = SortingType.NATURAL;
+                                break;
+                            case "byCount":
+                                sType = SortingType.BY_COUNT;
+                                break;
+                            default:
+                                throw new IllegalArgumentException();
+                        }
+                        i++;
+                    } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
+                        System.out.println("No sorting type defined!");
+                        return false;
+                    }
                     break;
-                case "byCount":
-                    sType = SortingType.BY_COUNT;
+                case "-dataType":
+                    try {
+                        switch (args[i + 1]) {
+                            case "word":
+                                dType = DataType.WORD;
+                                break;
+                            case "long":
+                                dType = DataType.LONG;
+                                break;
+                            case "line":
+                                dType = DataType.LINE;
+                                break;
+                            default:
+                                throw new IllegalArgumentException();
+                        }
+                        i++;
+                    } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
+                        System.out.println("No data type defined!");
+                        return false;
+                    }
+                    break;
+                default:
+                    System.out.printf("\"%s\" is not a valid parameter. It will be skipped.\n", arg);
             }
         }
-        index = argList.indexOf("-dataType");
-        if (index > -1) {
-            switch (argList.get(index + 1)) {
-                case "word":
-                    dType = DataType.WORD;
-                    break;
-                case "long":
-                    dType = DataType.LONG;
-                    break;
-                case "line":
-                    dType = DataType.LINE;
-                    break;
-            }
-        }
+        return true;
     }
 
     private static List<String> readInput() {
         Scanner scanner = new Scanner(System.in);
         List<String> data = new ArrayList<>();
-        if (dType == DataType.LINE) {
-            while (scanner.hasNextLine()) {
-                data.add(scanner.nextLine());
-            }
-        } else {
-            while (scanner.hasNext()) {
-                data.add(scanner.next());
-            }
+        switch (dType) {
+            case LINE:
+                while (scanner.hasNextLine()) {
+                    data.add(scanner.nextLine());
+                }
+                break;
+            case WORD:
+                while (scanner.hasNext()) {
+                    data.add(scanner.next());
+                }
+                break;
+            case LONG:
+                while (scanner.hasNext()) {
+                    String s = scanner.next();
+                    try {
+                        Long.parseLong(s);
+                        data.add(s);
+                    } catch (NumberFormatException e) {
+                        System.out.printf("\"%s\" is not a long. It will be skipped.\n", s);
+                    }
+                }
+                break;
         }
         return data;
     }
@@ -105,6 +144,7 @@ public class Main {
         for (String x : data) {
             System.out.print(sep + x);
         }
+        System.out.println();
     }
 
     private static void sortedAndPrintByCount(List<String> data) {
@@ -142,5 +182,6 @@ public class Main {
                 System.out.printf("\n%s: %d time(s), %.0f%%", value, count, percentage);
             }
         }
+        System.out.println();
     }
 }
