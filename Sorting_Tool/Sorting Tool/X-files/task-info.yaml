@@ -508,6 +508,12 @@ files:
 
 
   learner_created: false
+- name: out.txt
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/45/stages/244/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Mon, 11 Jan 2021 17:39:43 UTC
 record: -1
