@@ -5,3 +5,9 @@ content:
 - Start or end of a word
 - Find a word with a given length
 - Number parsing
+- Remove extra spaces
+- Remove HTML tags
+- Remove comments
+- Extracting big numbers from a text
+- Extracting words from a text
+- Find all passwords
