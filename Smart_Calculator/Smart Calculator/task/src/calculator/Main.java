@@ -1,6 +1,5 @@
 package calculator;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -10,14 +9,13 @@ public class Main {
     private static final Pattern multiplePlus = Pattern.compile("\\+{2,}");
     private static final Pattern plusMinusOrMinusPlus = Pattern.compile("\\+-|-\\+");
     private static final Pattern remover = Pattern.compile("\\s+|_");
-    private static final Pattern splitter = Pattern.compile("(?<=[+-])|(?=[+-])");
+    private static final Pattern operatorSplitter = Pattern.compile("(?<=[+-])|(?=[+-])");
     private static final Pattern knownOperators = Pattern.compile("[+-]");
     private static final Pattern spaceBetweenNumbersOrVariables = Pattern.compile("[^\\W_]\\s+[^\\W_]");
     private static final Pattern disallowedSymbols = Pattern.compile("[^\\w\\s=+-]");
     private static final Pattern allowedLastSymbols = Pattern.compile("\\w$");
     private static final Pattern allowedIdentifiers = Pattern.compile("[a-zA-Z]+");
     private static final Pattern assignmentOperator = Pattern.compile("=");
-
     private static final HashMap<String, Long> variables = new HashMap<>();
 
     public static void main(String[] args) {
@@ -50,11 +48,10 @@ public class Main {
             }
 
             line = cleanInput(line);
-
             if (line.contains("=")) {
                 assign(line);
             } else {
-                String[] elements = splitCalculation(line);
+                String[] elements = operatorSplitter.split(line);
                 // System.out.println(Arrays.toString(elements));  // DEBUG
                 try {
                     long result = calculate(elements);
@@ -73,10 +70,6 @@ public class Main {
         input = doubleMinus.matcher(input).replaceAll("+");  // "--" -> "+"
         input = multiplePlus.matcher(input).replaceAll("+");  // "++" -> "+"
         return plusMinusOrMinusPlus.matcher(input).replaceAll("-");  // "+-" | "-+" -> "-"
-    }
-
-    private static String[] splitCalculation(String input) {
-        return splitter.split(input);  // split before and after operators and between numbers
     }
 
     private static boolean checkForInvalidExpression(String line) {
@@ -99,7 +92,7 @@ public class Main {
             return;
         }
 
-        String[] valueElements = splitCalculation(splitAssignment[1]);
+        String[] valueElements = operatorSplitter.split(splitAssignment[1]);
         long value;
         try {
             value = calculate(valueElements);
