@@ -68,7 +68,7 @@ public class Main {
 
     private static void printHelp() {
         System.out.println("The calculator supports addition, subtraction, multiplication,");
-        System.out.println("division, exponentiation, and variable assignment using \"=\". ");
+        System.out.println("integer division, exponentiation, and variable assignment.");
         System.out.println("Variables are case-sensitive and must only consist of Latin characters.");
         System.out.println("\nThis calculator is just written to practice Java. It does not catch all");
         System.out.println("possible bad combinations of inputs. The main goal is to pass all tests.");
