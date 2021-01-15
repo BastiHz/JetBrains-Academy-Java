@@ -2,6 +2,7 @@ package calculator;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.math.BigInteger;
 
 public class Main {
     private static final Pattern doubleMinus = Pattern.compile("--");
@@ -16,7 +17,7 @@ public class Main {
     private static final Pattern allowedLastSymbols = Pattern.compile("[\\w)]$");
     private static final Pattern allowedIdentifiers = Pattern.compile("[a-zA-Z]+");
     private static final Pattern assignmentOperator = Pattern.compile("=");
-    private static final HashMap<String, Long> variables = new HashMap<>();
+    private static final HashMap<String, BigInteger> variables = new HashMap<>();
     private static final Map<String, Integer> operatorPrecedence = Map.of(
             "+", 1, "-", 1, "*", 2, "/", 2, "^", 3
     );
@@ -53,14 +54,11 @@ public class Main {
             } else {
                 String[] elements = operatorSplitter.split(line);
                 if (checkAllVariablesAreKnown(elements)) {
-                    long result;
                     try {
-                        result = calculate(elements);
+                        System.out.println(calculate(elements));
                     } catch(IllegalArgumentException e) {
                         System.out.println("Invalid expression");
-                        continue;
                     }
-                    System.out.println(result);
                 }
             }
         }
@@ -71,7 +69,9 @@ public class Main {
         System.out.println("integer division, exponentiation, and variable assignment.");
         System.out.println("Variables are case-sensitive and must only consist of Latin characters.");
         System.out.println("\nThis calculator is just written to practice Java. It does not catch all");
-        System.out.println("possible bad combinations of inputs. The main goal is to pass all tests.");
+        System.out.println("possible bad combinations of inputs. It also uses BigIntegers for all");
+        System.out.println("numbers small and big, which is not ideal for performance. The main goal ");
+        System.out.println("is to pass all tests.");
         System.out.println("\nType \"/exit\" to quit.");
     }
 
@@ -105,7 +105,7 @@ public class Main {
 
         String[] valueElements = operatorSplitter.split(splitAssignment[1]);
         if (checkAllVariablesAreKnown(valueElements)) {
-            long value;
+            BigInteger value;
             try {
                 value = calculate(valueElements);
             } catch (IllegalArgumentException e) {
@@ -127,43 +127,46 @@ public class Main {
         return true;
     }
 
-    private static long calculate(String[] elements) {
+    private static BigInteger calculate(String[] elements) {
         // System.out.println(Arrays.toString(elements));  // DEBUG
         Queue<String> postfix = toPostFixNotation(elements);
         // System.out.println(postfix);  // DEBUG
 
-        Deque<Long> resultStack = new ArrayDeque<>();
-        resultStack.addLast(0L);
+        Deque<BigInteger> resultStack = new ArrayDeque<>();
+        resultStack.addLast(BigInteger.ZERO);
         while (!postfix.isEmpty()) {
             String element = postfix.remove();
             if (knownOperators.matcher(element).matches()) {
-                Long b = resultStack.removeLast();
-                Long a = resultStack.removeLast();
+                BigInteger b = resultStack.removeLast();
+                BigInteger a = resultStack.removeLast();
                 switch (element) {
                     case "+":
-                        resultStack.addLast(a + b);
+                        resultStack.addLast(a.add(b));
                         break;
                     case "-":
-                        resultStack.addLast(a - b);
+                        resultStack.addLast(a.subtract(b));
                         break;
                     case "*":
-                        resultStack.addLast(a * b);
+                        resultStack.addLast(a.multiply(b));
                         break;
                     case "/":
-                        resultStack.addLast(a / b);
+                        resultStack.addLast(a.divide(b));
                         break;
                     case "^":
-                        resultStack.addLast((long) Math.pow(a, b));
+                        if (b.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) <= 0) {
+                            resultStack.addLast(a.pow(b.intValue()));
+                        } else {
+                            // Exponent is too large.
+                            throw new IllegalArgumentException();
+                        }
                         break;
                 }
             } else {
-                long value;
                 if (allowedIdentifiers.matcher(element).matches()) {
-                    value = variables.get(element);
+                    resultStack.addLast(variables.get(element));
                 } else {
-                    value = Long.parseLong(element);
+                    resultStack.addLast(new BigInteger(element));
                 }
-                resultStack.addLast(value);
             }
         }
         return resultStack.removeLast();
