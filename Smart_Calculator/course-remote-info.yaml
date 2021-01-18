@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/203965/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Fri, 15 Jan 2021 23:03:56 UTC
+update_date: Mon, 18 Jan 2021 15:24:06 UTC
 stages:
 - id: 220
   step: 5316
@@ -110,6 +110,8 @@ topics:
   3:
   - title: Introduction to OOP
     theory_id: 3614
+  - title: IDE
+    theory_id: 10996
   - title: Regexps basics
     theory_id: 7580
   - title: Regexps in Java
@@ -122,8 +124,6 @@ topics:
     theory_id: 3687
   - title: Regexes in programs
     theory_id: 3696
-  - title: IDE
-    theory_id: 10996
   - title: Patterns and Matcher
     theory_id: 3712
   - title: Replacing characters

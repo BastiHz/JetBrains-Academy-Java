@@ -5,22 +5,22 @@ import java.util.regex.Pattern;
 import java.math.BigInteger;
 
 public class Main {
-    private static final Pattern doubleMinus = Pattern.compile("--");
-    private static final Pattern multiplePlus = Pattern.compile("\\+{2,}");
-    private static final Pattern plusMinusOrMinusPlus = Pattern.compile("\\+-|-\\+");
-    private static final Pattern invalidOperatorCombination = Pattern.compile("[^\\w\\s)]\\s*[*/^]|[*/^]\\s*[^\\w\\s(]");
-    private static final Pattern remover = Pattern.compile("\\s+|_");
-    private static final Pattern operatorSplitter = Pattern.compile("(?<=[+*/^()-])|(?=[+*/^()-])");
-    private static final Pattern knownOperators = Pattern.compile("[+*/^-]");
-    private static final Pattern spaceBetweenNumbersOrVariables = Pattern.compile("\\w\\s+\\w");
-    private static final Pattern disallowedSymbols = Pattern.compile("[^\\w\\s=+*/^()-]|_");
-    private static final Pattern allowedLastSymbols = Pattern.compile("[\\w)]$");
-    private static final Pattern allowedIdentifiers = Pattern.compile("[a-zA-Z]+");
+    private static final Pattern DOUBLE_MINUS = Pattern.compile("--");
+    private static final Pattern MULTIPLE_PLUS = Pattern.compile("\\+{2,}");
+    private static final Pattern PLUS_MINUS_OR_MINUS_PLUS = Pattern.compile("\\+-|-\\+");
+    private static final Pattern INVALID_OPERATOR_COMBINATION = Pattern.compile("[^\\w\\s)]\\s*[*/^]|[*/^]\\s*[^\\w\\s(]");
+    private static final Pattern REMOVER = Pattern.compile("\\s+|_");
+    private static final Pattern OPERATOR_SPLITTER = Pattern.compile("(?<=[+*/^()-])|(?=[+*/^()-])");
+    private static final Pattern KNOWN_OPERATORS = Pattern.compile("[+*/^-]");
+    private static final Pattern SPACE_BETWEEN_NUMBERS_OR_VARIABLES = Pattern.compile("\\w\\s+\\w");
+    private static final Pattern DISALLOWED_SYMBOLS = Pattern.compile("[^\\w\\s=+*/^()-]|_");
+    private static final Pattern ALLOWED_LAST_SYMBOLS = Pattern.compile("[\\w)]$");
+    private static final Pattern ALLOWED_IDENTIFIERS = Pattern.compile("[a-zA-Z]+");
     private static final Pattern assignmentOperator = Pattern.compile("=");
-    private static final HashMap<String, BigInteger> variables = new HashMap<>();
-    private static final Map<String, Integer> operatorPrecedence = Map.of(
+    private static final Map<String, Integer> OPERATOR_PRECEDENCE = Map.of(
             "+", 1, "-", 1, "*", 2, "/", 2, "^", 3
     );
+    private static final HashMap<String, BigInteger> variables = new HashMap<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -52,7 +52,7 @@ public class Main {
             if (line.contains("=")) {
                 assign(line);
             } else {
-                String[] elements = operatorSplitter.split(line);
+                String[] elements = OPERATOR_SPLITTER.split(line);
                 if (checkAllVariablesAreKnown(elements)) {
                     try {
                         System.out.println(calculate(elements));
@@ -76,17 +76,17 @@ public class Main {
     }
 
     private static boolean checkForInvalidExpression(String line) {
-        return !allowedLastSymbols.matcher(line).find()
-                || disallowedSymbols.matcher(line).find()
-                || spaceBetweenNumbersOrVariables.matcher(line).find()
-                || invalidOperatorCombination.matcher(line).find();
+        return !ALLOWED_LAST_SYMBOLS.matcher(line).find()
+                || DISALLOWED_SYMBOLS.matcher(line).find()
+                || SPACE_BETWEEN_NUMBERS_OR_VARIABLES.matcher(line).find()
+                || INVALID_OPERATOR_COMBINATION.matcher(line).find();
     }
 
     private static String cleanInput(String input) {
-        input = remover.matcher(input).replaceAll("");  // remove all whitespace and "_"
-        input = doubleMinus.matcher(input).replaceAll("+");  // "--" -> "+"
-        input = multiplePlus.matcher(input).replaceAll("+");  // "++" -> "+"
-        return plusMinusOrMinusPlus.matcher(input).replaceAll("-");  // "+-" | "-+" -> "-"
+        input = REMOVER.matcher(input).replaceAll("");  // remove all whitespace and "_"
+        input = DOUBLE_MINUS.matcher(input).replaceAll("+");  // "--" -> "+"
+        input = MULTIPLE_PLUS.matcher(input).replaceAll("+");  // "++" -> "+"
+        return PLUS_MINUS_OR_MINUS_PLUS.matcher(input).replaceAll("-");  // "+-" | "-+" -> "-"
     }
 
     private static void assign(String input) {
@@ -98,12 +98,12 @@ public class Main {
         }
 
         String identifier = splitAssignment[0];
-        if (!allowedIdentifiers.matcher(identifier).matches()) {
+        if (!ALLOWED_IDENTIFIERS.matcher(identifier).matches()) {
             System.out.println("Invalid identifier");
             return;
         }
 
-        String[] valueElements = operatorSplitter.split(splitAssignment[1]);
+        String[] valueElements = OPERATOR_SPLITTER.split(splitAssignment[1]);
         if (checkAllVariablesAreKnown(valueElements)) {
             BigInteger value;
             try {
@@ -118,7 +118,7 @@ public class Main {
 
     private static boolean checkAllVariablesAreKnown(String[] elements) {
         for (String element : elements) {
-            if (allowedIdentifiers.matcher(element).matches() && !variables.containsKey(element)) {
+            if (ALLOWED_IDENTIFIERS.matcher(element).matches() && !variables.containsKey(element)) {
                 // Identifier is valid but refers to unknown variable.
                 System.out.println("Unknown variable");
                 return false;
@@ -136,7 +136,7 @@ public class Main {
         resultStack.addLast(BigInteger.ZERO);
         while (!postfix.isEmpty()) {
             String element = postfix.remove();
-            if (knownOperators.matcher(element).matches()) {
+            if (KNOWN_OPERATORS.matcher(element).matches()) {
                 BigInteger b = resultStack.removeLast();
                 BigInteger a = resultStack.removeLast();
                 switch (element) {
@@ -162,7 +162,7 @@ public class Main {
                         break;
                 }
             } else {
-                if (allowedIdentifiers.matcher(element).matches()) {
+                if (ALLOWED_IDENTIFIERS.matcher(element).matches()) {
                     resultStack.addLast(variables.get(element));
                 } else {
                     resultStack.addLast(new BigInteger(element));
@@ -177,7 +177,7 @@ public class Main {
         Deque<String> operatorStack = new ArrayDeque<>(elements.length);
 
         for (String element : elements) {
-            if (knownOperators.matcher(element).matches()) {
+            if (KNOWN_OPERATORS.matcher(element).matches()) {
                 String stackLast = operatorStack.peekLast();
                 if (!operatorStack.isEmpty()
                         && !"(".equals(stackLast)
@@ -224,6 +224,6 @@ public class Main {
     }
 
     private static boolean hasHigherPrecedence(String a, String b) {
-        return operatorPrecedence.get(a) > operatorPrecedence.get(b);
+        return OPERATOR_PRECEDENCE.get(a) > OPERATOR_PRECEDENCE.get(b);
     }
 }
