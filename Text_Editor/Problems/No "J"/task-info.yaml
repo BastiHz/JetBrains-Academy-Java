@@ -1,0 +1,26 @@
+type: code
+files:
+- name: src/Main.java
+  visible: true
+  text: |-
+    import java.util.*;
+
+    public class Main {
+
+        public static void processIterator(String[] array) {
+            // write your code here
+        }
+
+        /* Do not change code below */
+        public static void main(String[] args) {
+            Scanner scanner = new Scanner(System.in);
+            processIterator(scanner.nextLine().split(" "));
+        }
+    }
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/2344#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: Tue, 19 Jan 2021 13:08:43 UTC
+record: -1
