@@ -16,11 +16,9 @@ public class Main {
     private static final Pattern DISALLOWED_SYMBOLS = Pattern.compile("[^\\w\\s=+*/^()-]|_");
     private static final Pattern ALLOWED_LAST_SYMBOLS = Pattern.compile("[\\w)]$");
     private static final Pattern ALLOWED_IDENTIFIERS = Pattern.compile("[a-zA-Z]+");
-    private static final Pattern assignmentOperator = Pattern.compile("=");
-    private static final Map<String, Integer> OPERATOR_PRECEDENCE = Map.of(
-            "+", 1, "-", 1, "*", 2, "/", 2, "^", 3
-    );
-    private static final HashMap<String, BigInteger> variables = new HashMap<>();
+    private static final Pattern ASSIGNMENT_OPERATOR = Pattern.compile("=");
+    private static final Map<String, Integer> OPERATOR_PRECEDENCE = Map.of("+", 1, "-", 1, "*", 2, "/", 2, "^", 3);
+    private static final Map<String, BigInteger> variables = new HashMap<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -49,7 +47,7 @@ public class Main {
             }
 
             line = cleanInput(line);
-            if (line.contains("=")) {
+            if (ASSIGNMENT_OPERATOR.matcher(line).find()) {
                 assign(line);
             } else {
                 String[] elements = OPERATOR_SPLITTER.split(line);
@@ -90,7 +88,7 @@ public class Main {
     }
 
     private static void assign(String input) {
-        String[] splitAssignment = assignmentOperator.split(input);
+        String[] splitAssignment = ASSIGNMENT_OPERATOR.split(input);
         // System.out.println(Arrays.toString(splitAssignment));  // DEBUG
         if (splitAssignment.length != 2) {
             System.out.println("Invalid assignment");
