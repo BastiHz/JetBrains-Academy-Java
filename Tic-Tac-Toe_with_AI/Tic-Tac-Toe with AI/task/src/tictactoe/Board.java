@@ -3,14 +3,13 @@ package tictactoe;
 import java.util.Arrays;
 
 public class Board {
-    // Storing the board as a 1d-array makes many things simpler.
-    // map of the indices:
+    // Storing the board as a 1d-array instead of a 2d-array makes many things simpler.
     // 0 1 2
     // 3 4 5
     // 6 7 8
-    private final char[] board = new char[9];
-
-    Board() {
+    private final char[] board;
+    {
+        board = new char[9];
         Arrays.fill(board, ' ');
     }
 
