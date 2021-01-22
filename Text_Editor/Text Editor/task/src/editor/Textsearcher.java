@@ -22,13 +22,13 @@ class TextSearcher extends SwingWorker<List<SearchResult>, SearchResult> {
         this.textArea = textarea;
         this.searchTerm = useRegex ? searchTerm : searchTerm.toLowerCase();
         this.useRegex = useRegex;
-        searchResults.clear();
         this.searchResults = searchResults;
         this.searchResultMarker = searchResultMarker;
     }
 
     @Override
     protected List<SearchResult> doInBackground() {
+        searchResults.clear();
         return useRegex ? searchWithRegex() : searchWithString();
     }
 
