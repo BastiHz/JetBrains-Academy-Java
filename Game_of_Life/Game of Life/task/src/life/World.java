@@ -7,16 +7,12 @@ public class World {
         {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}
     };
     private final boolean[][] world;
-    final int size;
+    final int SIZE;
 
     World(int size) {
-        this.size = size;
+        SIZE = size;
         world = new boolean[size][size];
-    }
-
-    World(int size, long seed) {
-        this(size);
-        Random random = new Random(seed);
+        Random random = new Random();
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 world[y][x] = random.nextBoolean();
@@ -35,8 +31,8 @@ public class World {
     int getNAliveNeighbors(int x, int y) {
         int n = 0;
         for (int[] offset : neighborOffsets) {
-            int neighborX = Math.floorMod(x + offset[0], size);
-            int neighborY = Math.floorMod(y + offset[1], size);
+            int neighborX = Math.floorMod(x + offset[0], SIZE);
+            int neighborY = Math.floorMod(y + offset[1], SIZE);
             if (world[neighborY][neighborX]) {
                 n++;
             }
@@ -58,8 +54,8 @@ public class World {
      * @param other The other World object.
      */
     void copyTo(World other) {
-        for (int y = 0; y < size; y++) {
-            System.arraycopy(world[y], 0, other.world[y], 0, size);
+        for (int y = 0; y < SIZE; y++) {
+            System.arraycopy(world[y], 0, other.world[y], 0, SIZE);
         }
     }
 }

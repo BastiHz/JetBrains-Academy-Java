@@ -243,6 +243,113 @@ files:
         fun Char.isAlive(): Boolean = this != ' '
     }
   learner_created: false
+- name: src/life/GameOfLife.java
+  visible: true
+  text: |
+    package life;
+
+    public class GameOfLife {
+        private final World world;
+        private final World nextWorld;
+
+        GameOfLife(int size, long seed) {
+            world = new World(size, seed);
+            nextWorld = new World(size);
+        }
+
+        void run(int nGenerations) {
+            for (int i = 0; i < nGenerations; i++) {
+                for (int y = 0; y < world.size; y++) {
+                    for (int x = 0; x < world.size; x++) {
+                        int n = world.getNAliveNeighbors(x, y);
+                        if (world.getCell(x, y)) {
+                            nextWorld.setCell(x, y, n == 2 || n == 3);
+                        } else {
+                            nextWorld.setCell(x, y, n == 3);
+                        }
+                    }
+                }
+                nextWorld.copyTo(world);
+            }
+        }
+
+        void printWorld() {
+            world.print();
+        }
+    }
+  learner_created: true
+- name: src/life/World.java
+  visible: true
+  text: |
+    package life;
+
+    import java.util.Random;
+
+    public class World {
+        private static final int[][] neighborOffsets = {
+            {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}
+        };
+        private final boolean[][] world;
+        final int size;
+
+        World(int size) {
+            this.size = size;
+            world = new boolean[size][size];
+        }
+
+        World(int size, long seed) {
+            this(size);
+            Random random = new Random(seed);
+            for (int y = 0; y < size; y++) {
+                for (int x = 0; x < size; x++) {
+                    world[y][x] = random.nextBoolean();
+                }
+            }
+        }
+
+        boolean getCell(int x, int y) {
+            return world[y][x];
+        }
+
+        void setCell(int x, int y, boolean alive) {
+            world[y][x] = alive;
+        }
+
+        int getNAliveNeighbors(int x, int y) {
+            int n = 0;
+            for (int[] offset : neighborOffsets) {
+                int neighborX = Math.floorMod(x + offset[0], size);
+                int neighborY = Math.floorMod(y + offset[1], size);
+                if (world[neighborY][neighborX]) {
+                    n++;
+                }
+            }
+            return n;
+        }
+
+        void print() {
+            for (boolean[] row : world) {
+                for (boolean cell : row) {
+                    System.out.print(cell ? 'O' : ' ');
+                }
+                System.out.println();
+            }
+        }
+
+        /**
+         * Copy all cells from this world to another.
+         * @param other The other World object.
+         */
+        void copyTo(World other) {
+            for (int y = 0; y < size; y++) {
+                System.arraycopy(world[y], 0, other.world[y], 0, size);
+            }
+        }
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/54/stages/296/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sun, 24 Jan 2021 18:43:51 UTC
 record: -1
