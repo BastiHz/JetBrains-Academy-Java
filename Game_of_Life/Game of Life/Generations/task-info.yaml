@@ -178,6 +178,41 @@ files:
         }
     }
   learner_created: false
+- name: src/life/World.java
+  visible: true
+  text: |
+    package life;
+
+    import java.util.Random;
+
+    public class World {
+        private final char[][] world;
+        private final int size;
+
+        World(int size, long seed) {
+            this.size = size;
+            world = new char[size][size];
+            Random random = new Random(seed);
+            for (int y = 0; y < size; y++) {
+                for (int x = 0; x < size; x++) {
+                    world[y][x] = random.nextBoolean() ? 'O' : ' ';
+                }
+            }
+        }
+
+        void print() {
+            for (int y = 0; y < size; y++) {
+                System.out.println(world[y]);
+            }
+        }
+    }
+  learner_created: true
+- name: src/life/GameOfLife.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/54/stages/295/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sun, 24 Jan 2021 14:17:40 UTC
 record: -1
