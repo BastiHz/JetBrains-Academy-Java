@@ -10,18 +10,28 @@ public class World {
     final boolean[][] world;
     final boolean[][] nextWorld;
     int generationNumber = 0;
-    int nLivingCells;
+    int nLivingCells = 0;
 
     World(int size) {
         this.SIZE = size;
         world = new boolean[SIZE][SIZE];
+        nextWorld = new boolean[SIZE][SIZE];
+        newRandom();
+    }
+
+    void newRandom() {
+        generationNumber = 0;
+        nLivingCells = 0;
         Random random = new Random();
         for (int y = 0; y < SIZE; y++) {
             for (int x = 0; x < SIZE; x++) {
-                world[y][x] = random.nextBoolean();
+                boolean isAlive = random.nextBoolean();
+                world[y][x] = isAlive;
+                if (isAlive) {
+                    nLivingCells++;
+                }
             }
         }
-        nextWorld = new boolean[SIZE][SIZE];
     }
 
     void step() {
@@ -51,14 +61,16 @@ public class World {
     int getNAliveNeighbors(int x, int y) {
         int n = 0;
         for (int[] offset : neighborOffsets) {
-            int neighborX = x + offset[0];
-            int neighborY = y + offset[1];
-            neighborX = neighborX > -1 ? neighborX % SIZE : SIZE + neighborX;
-            neighborY = neighborY > -1 ? neighborY % SIZE : SIZE + neighborY;
+            int neighborX = correctNeighborPosition(x + offset[0]);
+            int neighborY = correctNeighborPosition(y + offset[1]);
             if (world[neighborY][neighborX]) {
                 n++;
             }
         }
         return n;
+    }
+
+    int correctNeighborPosition(int pos) {
+        return pos > -1 ? pos % SIZE : SIZE + pos;
     }
 }

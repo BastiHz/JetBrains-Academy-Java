@@ -7,6 +7,7 @@ class GameRunner implements Runnable {
     final JLabel generationLabel;
     final JLabel aliveLabel;
     final JPanel worldPanel;
+    boolean isRunning = false;
 
     GameRunner(World world, JLabel generationLabel, JLabel aliveLabel, JPanel worldPanel) {
         this.world = world;
@@ -17,14 +18,20 @@ class GameRunner implements Runnable {
 
     @Override
     public void run() {
-        try {
-            while (!Thread.interrupted()) {
+        while (true) {
+            if (isRunning) {
                 world.step();
-                generationLabel.setText("Generation #" + world.generationNumber);
-                aliveLabel.setText("Alive: " + world.nLivingCells);
-                worldPanel.repaint();
-                Thread.sleep(500);
+                draw();
             }
-        } catch (InterruptedException e) {}
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {}
+        }
+    }
+
+    void draw() {
+        generationLabel.setText("Generation #" + world.generationNumber);
+        aliveLabel.setText("Alive: " + world.nLivingCells);
+        worldPanel.repaint();
     }
 }
