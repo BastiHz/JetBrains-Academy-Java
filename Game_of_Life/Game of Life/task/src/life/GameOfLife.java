@@ -1,41 +1,40 @@
 package life;
 
-public class GameOfLife {
-    private final World world;
-    private final World nextWorld;
-    private int generationNumber = 0;
-    private int nLivingCells;
+import javax.swing.*;
 
+public class GameOfLife extends JFrame {
+    private final int CELL_SIZE = 15;
+    private final int WORLD_SIZE = 30;
 
-    GameOfLife(int size) {
-        world = new World(size);
-        nextWorld = new World(size);
+    public GameOfLife() {
+        super("Game of Life");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        int worldPanelSize = CELL_SIZE * WORLD_SIZE;
+        setSize(worldPanelSize, worldPanelSize + 75);
+        setLocationRelativeTo(null);
+
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+
+        JLabel generationLabel = new JLabel("Generation #0");
+        generationLabel.setName("GenerationLabel");
+        add(generationLabel);
+        JLabel aliveLabel = new JLabel("Alive: 0");
+        aliveLabel.setName("AliveLabel");
+        add(aliveLabel);
+
+        World world = new World(WORLD_SIZE);
+
+        JPanel worldPanel = new WorldPanel(world, CELL_SIZE);
+        add(worldPanel);
+
+        setVisible(true);
+
+        GameRunner gameRunner = new GameRunner(world, generationLabel, aliveLabel, worldPanel);
+        Thread gameThread = new Thread(gameRunner);
+        gameThread.start();
     }
 
-    void step() {
-        generationNumber++;
-        nLivingCells = 0;
-        for (int y = 0; y < world.SIZE; y++) {
-            for (int x = 0; x < world.SIZE; x++) {
-                int n = world.getNAliveNeighbors(x, y);
-                boolean nextGenAlive;
-                if (world.getCell(x, y)) {
-                    nextGenAlive = n == 2 || n == 3;
-                } else {
-                    nextGenAlive = n == 3;
-                }
-                nextWorld.setCell(x, y, nextGenAlive);
-                if (nextGenAlive) {
-                    nLivingCells++;
-                }
-            }
-        }
-        nextWorld.copyTo(world);
-    }
-
-    void print() {
-        System.out.println("Generation #" + generationNumber);
-        System.out.println("Alive: " + nLivingCells);
-        world.print();
+    public static void main(String[] args) {
+        new GameOfLife();
     }
 }

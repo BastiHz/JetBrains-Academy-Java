@@ -21,6 +21,18 @@ class ClueWithDynamicFeedbackChecker(
         val checker: (String) -> CheckResult
 ) : ClueWithChecker(input)
 
+fun createPredefinedFeedbackTest(
+        feedback: String,
+        input: String = "",
+        checker: (String) -> Boolean
+): TestCase<ClueWithChecker> {
+    return ClueWithPredefinedFeedbackChecker(
+            predefinedFeedback = feedback,
+            input = input,
+            checker = checker
+    ).toTestCase()
+}
+
 fun createDynamicFeedbackTest(input: String = "", checker: (String) -> CheckResult): TestCase<ClueWithChecker> {
     return ClueWithDynamicFeedbackChecker(
             input = input,
@@ -38,7 +50,7 @@ fun checkClueWithCheckerTest(reply: String, clue: ClueWithChecker): CheckResult 
         if (clue is ClueWithPredefinedFeedbackChecker) {
             fail(clue.predefinedFeedback)
         } else {
-            CheckResult.wrong("")
+            CheckResult.correct()
         }
     }
 }
