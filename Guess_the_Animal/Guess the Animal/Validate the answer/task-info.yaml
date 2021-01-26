@@ -408,6 +408,12 @@ files:
       - "yes or no"
       - "The answer \"{0}\" is unclear and the program should ask again."
   learner_created: false
+- name: src/animals/GuessTheAnimal.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/132/stages/703/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Tue, 26 Jan 2021 21:46:58 UTC
 record: -1

@@ -1,0 +1,13 @@
+content:
+- The first day of a month or not
+- The last day of a month
+- The n-th day from the end of a month
+- Seconds since start of a day
+- Return time without seconds
+- Seconds between two time points
+- Add days and subtract hours
+- Add 11 hours and print the date
+- Adding N minutes
+- Don't be late again
+- The New Year is coming (or not)
+- The intersection of time ranges
