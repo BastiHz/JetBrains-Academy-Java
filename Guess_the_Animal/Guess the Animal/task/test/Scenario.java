@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 
 import static java.text.MessageFormat.format;
 import static java.util.function.Predicate.not;
+import static java.util.regex.Pattern.compile;
 import static org.hyperskill.hstest.testcase.CheckResult.correct;
 import static org.hyperskill.hstest.testcase.CheckResult.wrong;
 
@@ -45,8 +46,8 @@ public class Scenario {
                                 "not contains", not(output::contains),
                                 "file exists", file -> new File(file).exists(),
                                 "file delete", file -> new File(file).delete(),
+                                "find", pattern -> compile(pattern).matcher(output).find(),
                                 "matches", output::matches);
-
                         if (validation.get(action[0]).test(format(action[1], values))) continue;
                         return wrong(format(action[2], values));
                 }
