@@ -715,6 +715,12 @@ files:
         }
     }
   learner_created: true
+- name: src/animals/KnowledgeTree.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/132/stages/705/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Fri, 29 Jan 2021 16:46:56 UTC
 record: -1
