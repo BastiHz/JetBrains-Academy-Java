@@ -22,13 +22,11 @@ public class GuessTheAnimal {
         "(n|no|no way|nah|nope|negative|i don't think so|yeah no)[.!]?",
         Pattern.CASE_INSENSITIVE
     );
-
-    private final Map<String, String[]> itCanHasIs = new HashMap<>();
-    {
-        itCanHasIs.put("it can", new String[] {"can", "can't", "Can it"});
-        itCanHasIs.put("it has", new String[] {"has", "doesn't have", "Does it have"});
-        itCanHasIs.put("it is", new String[] {"is", "isn't", "Is it"});
-    }
+    private final Map<String, String[]> itCanHasIs = Map.of(
+        "it can", new String[] {"can", "can't", "Can it"},
+        "it has", new String[] {"has", "doesn't have", "Does it have"},
+        "it is", new String[] {"is", "isn't", "Is it"}
+    );
     private final String[] UNCLEAR = {
         "I'm not sure I caught you. Was it yes or no?",
         "Funny, I still don't understand. Is it yes or no?",
@@ -75,27 +73,27 @@ public class GuessTheAnimal {
     private void askFavoriteAnimal() {
         System.out.println("I want to learn about animals.");
         System.out.println("Which animal do you like most?");
-        knowledge.setRoot(getAnimal());
+        knowledge.root = getAnimal();
         System.out.println("Wonderful! I've learned so much about animals");
     }
 
     private void play() {
-        Node currentNode = knowledge.getRoot();
+        Node currentNode = knowledge.root;
+        Node parent = null;
         while (true) {
-            if (currentNode instanceof Fact) {
-                Fact fact = (Fact) currentNode;
-                System.out.println(fact.question);
-                currentNode = getYesNo() ? currentNode.trueChild : currentNode.falseChild;
-            } else {
-                Animal animal = (Animal) currentNode;
-                System.out.printf("Is it %s %s?%n", animal.article, animal.name);
+            if (currentNode.isAnimal()) {
+                System.out.printf("Is it %s?%n", currentNode.data);
                 if (getYesNo()) {
                     System.out.println("Awesome! That was fun.");
                 } else {
                     System.out.println("I give up. What animal do you have in mind?");
-                    createNewFact(animal, getAnimal());
+                    createNewFact(currentNode, parent);
                 }
                 break;
+            } else {
+                System.out.println(getQuestionFromFact(currentNode));
+                parent = currentNode;
+                currentNode = getYesNo() ? currentNode.trueChild : currentNode.falseChild;
             }
         }
     }
@@ -104,7 +102,7 @@ public class GuessTheAnimal {
         printRandomMessage(GOODBYE);
     }
 
-    private Animal getAnimal() {
+    private Node getAnimal() {
         String name = scanner.nextLine().strip().toLowerCase();
         String article;
         if (ARTICLE_ANIMAL.matcher(name).matches()) {
@@ -114,26 +112,25 @@ public class GuessTheAnimal {
         } else {
             article = START_VOWEL.matcher(name).matches() ? "an" : "a";
         }
-        return new Animal(article, name);
+        return new Node(article, name);
     }
 
-    private void createNewFact(Animal oldAnimal, Animal newAnimal) {
-        String statement;
+    private void createNewFact(Node oldAnimal, Node parent) {
+        Node newAnimal = getAnimal();
         String factStart;
         String factRest;
         while (true) {
-            System.out.printf(
-                "Specify a fact that distinguishes %s %s from %s %s.%n",
-                oldAnimal.article, oldAnimal.name, newAnimal.article, newAnimal.name
+            System.out.printf("Specify a fact that distinguishes %s from %s.%n",
+                oldAnimal.data, newAnimal.data
             );
             System.out.println("The sentence should be of the format: 'It can/has/is ...'.");
-            statement = scanner.nextLine().trim().toLowerCase();
-            statement = DOT_BANG_END.matcher(statement).replaceAll("");
-            String[] statementParts = SECOND_SPACE.split(statement);
-            if (statementParts.length == 2) {
-                factStart = statementParts[0];
+            String answer = scanner.nextLine().trim().toLowerCase();
+            answer = DOT_BANG_END.matcher(answer).replaceAll("");
+            String[] answerParts = SECOND_SPACE.split(answer);
+            if (answerParts.length == 2) {
+                factStart = answerParts[0];
                 if (itCanHasIs.containsKey(factStart)) {
-                    factRest = statementParts[1];
+                    factRest = answerParts[1];
                     if (REST_OF_FACT.matcher(factRest).matches()) {
                         break;
                     }
@@ -145,30 +142,40 @@ public class GuessTheAnimal {
             System.out.println(" - It is a mammal.");
         }
 
-        System.out.printf("Is the statement correct for %s %s?%n",
-            newAnimal.article, newAnimal.name
-        );
+        System.out.printf("Is the statement correct for %s?%n", newAnimal.data);
         boolean factIsTrueForNewAnimal = getYesNo();
 
         System.out.println("I learned the following facts about animals:");
         String[] sentenceParts = itCanHasIs.get(factStart);
+        String oldName = SPACE_AFTER_ARTICLE.split(oldAnimal.data)[1];
+        String newName = SPACE_AFTER_ARTICLE.split(newAnimal.data)[1];
         if (factIsTrueForNewAnimal) {
-            System.out.printf(" - The %s %s %s.%n", oldAnimal.name, sentenceParts[1], factRest);
-            System.out.printf(" - The %s %s %s.%n", newAnimal.name, sentenceParts[0], factRest);
+            System.out.printf(" - The %s %s %s.%n", oldName, sentenceParts[1], factRest);
+            System.out.printf(" - The %s %s %s.%n", newName, sentenceParts[0], factRest);
         } else {
-            System.out.printf(" - The %s %s %s.%n", oldAnimal.name, sentenceParts[0], factRest);
-            System.out.printf(" - The %s %s %s.%n", newAnimal.name, sentenceParts[1], factRest);
+            System.out.printf(" - The %s %s %s.%n", oldName, sentenceParts[0], factRest);
+            System.out.printf(" - The %s %s %s.%n", newName, sentenceParts[1], factRest);
         }
 
-        System.out.println("I can distinguish these animals by asking the question:");
-        String question = String.format("%s %s?", sentenceParts[2], factRest);
-        System.out.println(" - " + question);
+        String statement = String.format("%s%s %s.",
+            Character.toUpperCase(factStart.charAt(0)),
+            factStart.substring(1),
+            factRest
+        );
+        Node fact = new Node(statement);
+        knowledge.insert(fact, parent, oldAnimal, newAnimal, factIsTrueForNewAnimal);
 
-        statement = Character.toUpperCase(statement.charAt(0)) + statement.substring(1) + ".";
-        Fact fact = new Fact(statement, question);
-        knowledge.insert(fact, oldAnimal, newAnimal, factIsTrueForNewAnimal);
+        System.out.println("I can distinguish these animals by asking the question:");
+        System.out.println(" - " + getQuestionFromFact(fact));
 
         System.out.println("Nice! I've learned so much about animals!");
+    }
+
+    private String getQuestionFromFact(Node fact) {
+        String[] parts = SECOND_SPACE.split(fact.data);
+        String questionStart = itCanHasIs.get(parts[0].toLowerCase())[2];
+        String questionRest = DOT_BANG_END.matcher(parts[1]).replaceAll("?");
+        return  questionStart + " " + questionRest;
     }
 
     private boolean getYesNo() {
