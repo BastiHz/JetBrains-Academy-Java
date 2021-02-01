@@ -4,6 +4,7 @@ import java.util.*;
 import java.time.LocalTime;
 import java.util.regex.Pattern;
 
+
 public class GuessTheAnimal {
 
     private final Scanner scanner = new Scanner(System.in);
@@ -38,11 +39,16 @@ public class GuessTheAnimal {
         "Bye!", "See you soon!", "Have a nice day!",
         "Talk to you later!", "Thank you and goodbye!", "See you later!"
     };
-    private final KnowledgeTree knowledge = new KnowledgeTree();
+    private final KnowledgeTree knowledge;
+
+    GuessTheAnimal(String mapperType) {
+        knowledge = new KnowledgeTree(mapperType);
+    }
+
 
     void run() {
         greet();
-        askFavoriteAnimal();
+        initKnowledge();
         System.out.println("Let's play a game!");
         do {
             System.out.println();
@@ -53,6 +59,7 @@ public class GuessTheAnimal {
             System.out.println();
             System.out.println("Would you like to play again?");
         } while (getYesNo());
+        knowledge.save();
         bye();
     }
 
@@ -70,30 +77,38 @@ public class GuessTheAnimal {
         System.out.println();
     }
 
-    private void askFavoriteAnimal() {
+    private void initKnowledge() {
+        knowledge.load();
+        if (knowledge.root == null) {
+            knowledge.root = askFavoriteAnimal();
+        }
+    }
+
+    private TreeNode askFavoriteAnimal() {
         System.out.println("I want to learn about animals.");
         System.out.println("Which animal do you like most?");
-        knowledge.root = getAnimal();
+        TreeNode animal = getAnimal();
         System.out.println("Wonderful! I've learned so much about animals");
+        return animal;
     }
 
     private void play() {
-        Node currentNode = knowledge.root;
-        Node parent = null;
+        TreeNode currentTreeNode = knowledge.root;
+        TreeNode parent = null;
         while (true) {
-            if (currentNode.isAnimal()) {
-                System.out.printf("Is it %s?%n", currentNode.data);
+            if (currentTreeNode.isAnimal()) {
+                System.out.printf("Is it %s?%n", currentTreeNode.data);
                 if (getYesNo()) {
                     System.out.println("Awesome! That was fun.");
                 } else {
                     System.out.println("I give up. What animal do you have in mind?");
-                    createNewFact(currentNode, parent);
+                    createNewFact(currentTreeNode, parent);
                 }
                 break;
             } else {
-                System.out.println(getQuestionFromFact(currentNode));
-                parent = currentNode;
-                currentNode = getYesNo() ? currentNode.trueChild : currentNode.falseChild;
+                System.out.println(getQuestionFromFact(currentTreeNode));
+                parent = currentTreeNode;
+                currentTreeNode = getYesNo() ? currentTreeNode.yes : currentTreeNode.no;
             }
         }
     }
@@ -102,7 +117,7 @@ public class GuessTheAnimal {
         printRandomMessage(GOODBYE);
     }
 
-    private Node getAnimal() {
+    private TreeNode getAnimal() {
         String name = scanner.nextLine().strip().toLowerCase();
         String article;
         if (ARTICLE_ANIMAL.matcher(name).matches()) {
@@ -112,11 +127,11 @@ public class GuessTheAnimal {
         } else {
             article = START_VOWEL.matcher(name).matches() ? "an" : "a";
         }
-        return new Node(article, name);
+        return new TreeNode(article, name);
     }
 
-    private void createNewFact(Node oldAnimal, Node parent) {
-        Node newAnimal = getAnimal();
+    private void createNewFact(TreeNode oldAnimal, TreeNode parent) {
+        TreeNode newAnimal = getAnimal();
         String factStart;
         String factRest;
         while (true) {
@@ -162,7 +177,7 @@ public class GuessTheAnimal {
             factStart.substring(1),
             factRest
         );
-        Node fact = new Node(statement);
+        TreeNode fact = new TreeNode(statement);
         knowledge.insert(fact, parent, oldAnimal, newAnimal, factIsTrueForNewAnimal);
 
         System.out.println("I can distinguish these animals by asking the question:");
@@ -171,7 +186,7 @@ public class GuessTheAnimal {
         System.out.println("Nice! I've learned so much about animals!");
     }
 
-    private String getQuestionFromFact(Node fact) {
+    private String getQuestionFromFact(TreeNode fact) {
         String[] parts = SECOND_SPACE.split(fact.data);
         String questionStart = itCanHasIs.get(parts[0].toLowerCase())[2];
         String questionRest = DOT_BANG_END.matcher(parts[1]).replaceAll("?");

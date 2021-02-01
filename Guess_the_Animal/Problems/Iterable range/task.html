@@ -1,0 +1,27 @@
+<h2>Iterable range</h2>
+<html>
+ <head></head>
+ <body>
+  <p></p>
+  <div class="alert alert-warning">
+   In this problem you need to create your own iterator but the theory has not given an example for it. You may skip the problem or google how to do that. Actually, the problem is not complicated.
+  </div>
+  <p></p> 
+  <p>Given a class named <code class="language-java">Range</code>. It represents a range from A (inclusive) to B (exclusive). The class implements the interface <code class="language-java">Iterable</code>, therefore, an instance of <code class="language-java">Range</code> can be used in the for-each loop. </p> 
+  <p>Write a body of the overridden method <code class="language-java">iterator</code> so that the following code works correctly:</p> 
+  <pre><code class="language-java">Range range = new Range(2, 6);
+
+for (Long val : range) {
+    System.out.println(val);
+}</code></pre> 
+  <p>It must print:</p> 
+  <pre><code class="language-java">2
+3
+4
+5</code></pre>
+ </body>
+</html><br><b>Sample Input:</b><br><pre><code class="language-no-highlight">2 6</code></pre><br><b>Sample Output:</b><br><pre><code class="language-no-highlight">2<br>3<br>4<br>5</code></pre><br><br><br><font color="gray">Memory limit: 256 MB</font><br><font color="gray">Time limit: 8 seconds</font><br><br>
+<b>Caution</b><br><br>
+You may see errors in your code or execution results due to missing context. Don’t worry about it, just write the solution and press Check.
+<br><br>
+<a href="https://hyperskill.org/learn/step/3574">Show topic summary</a>

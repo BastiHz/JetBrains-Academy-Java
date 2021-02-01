@@ -388,7 +388,6 @@ files:
 - name: test/GuessAnimalTest.java
   visible: false
   text: |-
-    import animals.Main;
     import org.hyperskill.hstest.dynamic.input.DynamicTestingMethod;
     import org.hyperskill.hstest.stage.StageTest;
     import org.hyperskill.hstest.testcase.CheckResult;
@@ -400,10 +399,6 @@ files:
     import java.util.stream.Stream;
 
     public class GuessAnimalTest extends StageTest<String> {
-
-        public GuessAnimalTest() {
-            super(Main.class);
-        }
 
         @DynamicTestingMethod
         CheckResult testLanguages() throws IOException {
@@ -438,7 +433,6 @@ files:
 - name: test/Scenario.java
   visible: false
   text: |-
-    import animals.Main;
     import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
     import org.hyperskill.hstest.testcase.CheckResult;
     import org.hyperskill.hstest.testing.TestedProgram;
@@ -472,7 +466,7 @@ files:
                     final var command = action[0];
                     switch (command) {
                         case "start":
-                            main = new TestedProgram(Main.class);
+                            main = new TestedProgram();
                             output = action.length == 1 ? main.start()
                                     : main.start(format(action[1], values).split(" "));
                             continue;

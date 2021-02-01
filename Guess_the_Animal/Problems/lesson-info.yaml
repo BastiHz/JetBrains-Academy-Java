@@ -22,3 +22,11 @@ content:
 - The height of the tree
 - The depth of the nodes
 - The passed hours since the beginning of year
+- Iterable range
+- Throw an IOException
+- Days of the week
+- Throw a checked exception
+- Out of bounds_
+- Convert to bytes
+- Reverse input text
+- Count words
