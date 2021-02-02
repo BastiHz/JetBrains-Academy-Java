@@ -1,0 +1,33 @@
+{
+  "yes" : {
+    "yes" : {
+      "yes" : {
+        "data" : "a fox"
+      },
+      "no" : {
+        "yes" : {
+          "data" : "a hare"
+        },
+        "no" : {
+          "data" : "a wolf"
+        },
+        "data" : "It is a shy animal."
+      },
+      "data" : "It has a long bushy tail."
+    },
+    "no" : {
+      "yes" : {
+        "data" : "a cat"
+      },
+      "no" : {
+        "data" : "a dog"
+      },
+      "data" : "It can climb trees."
+    },
+    "data" : "It is living in the forest."
+  },
+  "no" : {
+    "data" : "a shark"
+  },
+  "data" : "It is a mammal."
+}
