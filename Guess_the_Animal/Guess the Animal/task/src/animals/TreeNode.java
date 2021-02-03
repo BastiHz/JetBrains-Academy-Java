@@ -3,7 +3,8 @@ package animals;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.Map;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 
@@ -19,16 +20,20 @@ public class TreeNode {
     public String data;  // Can be either the full animal name or the fact statement.
 
     // The fields below will not be serialized.
-    static final Pattern SPACE_AFTER_ARTICLE = Pattern.compile("(?<=^(a|an))\\s");
-    static final Pattern ARTICLE_ANIMAL = Pattern.compile("^(a|an)\\s+.+");
-    static final Pattern START_VOWEL = Pattern.compile("^[aeiou].*");
     static final Pattern DOT_BANG_END = Pattern.compile("[.!]$");
-    static final Pattern SECOND_SPACE = Pattern.compile("(?<=^\\w{1,3}\\s\\w{1,3})\\s");
-    static final Map<String, String[]> itCanHasIs = Map.of(
-        "It can", new String[] {"can't", "Can it"},
-        "It has", new String[] {"doesn't have", "Does it have"},
-        "It is", new String[] {"isn't", "Is it"}
+    static final Pattern FACT_SPLIT = Pattern.compile(
+        TextHelper.getString("pattern.splitFact"),
+        Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS
     );
+    @SuppressWarnings("unchecked")
+    static final UnaryOperator<String> getArticle =
+        (UnaryOperator<String>) TextHelper.getObject("fun.getArticle");
+    @SuppressWarnings("unchecked")
+    static final Function<String, String[]> splitName =
+        (Function<String, String[]>) TextHelper.getObject("fun.splitName");
+    @SuppressWarnings("unchecked")
+    static final Function<String, Boolean> nameHasArticle =
+        (Function<String, Boolean>) TextHelper.getObject("fun.nameHasArticle");
     String name;
     String article;
     String question;
@@ -42,14 +47,18 @@ public class TreeNode {
     @JsonIgnore
     static TreeNode newAnimal() {
         TreeNode animal = new TreeNode();
-        String input = Helpers.nextLine();
-        if (ARTICLE_ANIMAL.matcher(input).matches()) {
+        String input = TextHelper.nextLine();
+        if (nameHasArticle.apply(input)) {
             animal.data = input;
             animal.initOtherAnimalFields();
         } else {
-            animal.article = START_VOWEL.matcher(input).matches() ? "an" : "a";
+            animal.article = getArticle.apply(input);
             animal.name = input;
-            animal.data = animal.article + " " + animal.name;
+            if (animal.article.isBlank()) {
+                animal.data = animal.name;
+            } else {
+                animal.data = animal.article + " " + animal.name;
+            }
         }
         return animal;
     }
@@ -58,7 +67,7 @@ public class TreeNode {
     static TreeNode newFact(String statement) {
         TreeNode fact = new TreeNode();
         statement = DOT_BANG_END.matcher(statement).replaceAll("");
-        statement = Helpers.capitalizeFirst(statement);
+        statement = TextHelper.capitalizeFirst(statement);
         fact.data = statement + ".";
         fact.initOtherFactFields();
         return fact;
@@ -77,19 +86,24 @@ public class TreeNode {
 
     @JsonIgnore
     private void initOtherAnimalFields() {
-        String[] parts = SPACE_AFTER_ARTICLE.split(data);
+        String[] parts = splitName.apply(data);
         this.article = parts[0];
         this.name = parts[1];
     }
 
     @JsonIgnore
     private void initOtherFactFields() {
-        String[] parts = SECOND_SPACE.split(data);
+        String[] parts = FACT_SPLIT.split(data);
         question = String.format(
             "%s %s?",
-            itCanHasIs.get(parts[0])[1],
+            TextHelper.FACT_QUESTION.get(parts[0]),
             parts[1].substring(0, parts[1].length() - 1)
         );
-        negatedStatement = String.format("It %s %s", itCanHasIs.get(parts[0])[0], parts[1]);
+        negatedStatement = String.format(
+            "%s %s %s",
+            TextHelper.getString("statement.it"),
+            TextHelper.FACT_NEGATION.get(parts[0]),
+            parts[1]
+        );
     }
 }

@@ -22,22 +22,24 @@ class KnowledgeTree {
     private int minAnimalDepth;
 
     KnowledgeTree(String mapperType) {
+        String extension;
         switch (mapperType) {
             case "json":
                 objectMapper = new JsonMapper();
-                FILENAME = "animals.json";
+                extension = ".json";
                 break;
             case "xml":
                 objectMapper = new XmlMapper();
-                FILENAME = "animals.xml";
+                extension = ".xml";
                 break;
             case "yaml":
                 objectMapper = new YAMLMapper();
-                FILENAME = "animals.yaml";
+                extension = ".yaml";
                 break;
             default:
-                throw new IllegalArgumentException("Invalid type specified.");
+                throw new IllegalArgumentException(TextHelper.getString("invalidType"));
         }
+        FILENAME = TextHelper.localizeFilename("animals", extension);
     }
 
     TreeNode getRoot() {
@@ -74,12 +76,13 @@ class KnowledgeTree {
             root = null;
         }
         if (root == null || root.data == null) {
-            System.out.println("I want to learn about animals.");
-            System.out.println("Which animal do you like most?");
+            TextHelper.println("animal.wantLearn");
+            TextHelper.println("animal.askFavorite");
             root = TreeNode.newAnimal();
-            System.out.println("Wonderful! I've learned so much about animals");
+            TextHelper.print("animal.nice");
+            TextHelper.println("animal.learnedMuch");
+            System.out.println();
         } else {
-            System.out.println(root.data);
             root.initOtherFields();
         }
     }
@@ -98,7 +101,7 @@ class KnowledgeTree {
         List<String> names = new ArrayList<>();
         getAllAnimalNames(root, names);
         Collections.sort(names);
-        System.out.println("Here are the animals I know:");
+        TextHelper.println("tree.list.animals");
         for (String name : names) {
             System.out.println(" - " + name);
         }
@@ -114,16 +117,16 @@ class KnowledgeTree {
     }
 
     void printAllFactsForAnimal() {
-        System.out.println("Enter the animal:");
+        TextHelper.println("tree.search.prompt");
         TreeNode animal = TreeNode.newAnimal();
         Deque<String> facts = new ArrayDeque<>();
         if (getAllFactsForAnimal(root, facts, animal.data)) {
-            System.out.printf("Facts about the %s:%n", animal.name);
+            TextHelper.printf("tree.search.facts", animal.name);
             while (!facts.isEmpty()) {
                 System.out.println(" - " + facts.pollLast());
             }
         } else {
-            System.out.printf("No facts about the %s.%n", animal.name);
+            TextHelper.printf("tree.search.noFacts", animal.name);
         }
     }
 
@@ -149,18 +152,14 @@ class KnowledgeTree {
         minAnimalDepth = Integer.MAX_VALUE;
         getTreeStats(root, 0);
 
-        System.out.println("The Knowledge Tree stats");
-        System.out.println();
-        System.out.println("- root node                    " + root.data);
-        System.out.printf("- total number of nodes        %d%n", numberOfAnimals + numberOfFacts);
-        System.out.println("- total number of animals      " + numberOfAnimals);
-        System.out.println("- total number of statements   " + numberOfFacts);
-        System.out.println("- height of the tree           " + treeHeight);
-        System.out.println("- minimum depth                " + minAnimalDepth);
-        System.out.printf(
-            "- average depth                %.1f%n",
-            (float) totalAnimalDepth / numberOfAnimals
-        );
+        TextHelper.println("tree.stats.title");
+        TextHelper.printf("tree.stats.root", root.data);
+        TextHelper.printf("tree.stats.nodes", numberOfAnimals + numberOfFacts);
+        TextHelper.printf("tree.stats.animals", numberOfAnimals);
+        TextHelper.printf("tree.stats.statements", numberOfFacts);
+        TextHelper.printf("tree.stats.height", treeHeight);
+        TextHelper.printf("tree.stats.minimum", minAnimalDepth);
+        TextHelper.printf("tree.stats.average", (float) totalAnimalDepth / numberOfAnimals);
     }
 
     private void getTreeStats(TreeNode node, int depth) {

@@ -7,10 +7,6 @@ class Menu {
 
     private final KnowledgeTree knowledgeTree;
     private final GuessingGame guessingGame;
-    private final String[] GOODBYE = {
-        "Bye!", "See you soon!", "Have a nice day!",
-        "Talk to you later!", "Thank you and goodbye!", "See you later!"
-    };
 
     Menu(String mapperType) {
         this.knowledgeTree = new KnowledgeTree(mapperType);
@@ -20,24 +16,24 @@ class Menu {
     void run() {
         greet();
         knowledgeTree.load();
-        System.out.println("Welcome to the animal expert system!");
+        TextHelper.println("welcome");
         menu();
         knowledgeTree.save();
-        bye();
+        TextHelper.println("farewell");;
     }
 
     private void menu() {
         while (true) {
             System.out.println();
-            System.out.println("What do you want to do:");
+            TextHelper.println("menu.title");
             System.out.println();
-            System.out.println("1. Play the guessing game");
-            System.out.println("2. List of all animals");
-            System.out.println("3. Search for an animal");
-            System.out.println("4. Calculate statistics");
-            System.out.println("5. Print the Knowledge Tree");
-            System.out.println("0. Exit");
-            String choice = Helpers.scanner.nextLine();
+            TextHelper.println("menu.entry.play");
+            TextHelper.println("menu.entry.list");
+            TextHelper.println("menu.entry.search");
+            TextHelper.println("menu.entry.statistics");
+            TextHelper.println("menu.entry.print");
+            TextHelper.println("menu.entry.exit");
+            String choice = TextHelper.scanner.nextLine();
             if ("0".equals(choice)) {
                 return;
             }
@@ -58,7 +54,7 @@ class Menu {
                     knowledgeTree.print();
                     break;
                 default:
-                    System.out.println("Invalid input. Please choose a number from the list.");
+                    TextHelper.println("menu.error");
                     break;
             }
         }
@@ -66,19 +62,17 @@ class Menu {
 
     private void greet() {
         int currentHour = LocalTime.now().getHour();
-        if (currentHour < 5) {
-            System.out.println("Hi, early bird!");
+        if (currentHour < 3) {
+            TextHelper.println("greeting.night");
+        } else if (currentHour < 5) {
+            TextHelper.println("greeting.early");
         } else if (currentHour < 12) {
-            System.out.println("Good morning.");
+            TextHelper.println("greeting.morning");
         } else if (currentHour < 18) {
-            System.out.println("Good afternoon.");
+            TextHelper.println("greeting.afternoon");
         } else {
-            System.out.println("Good evening.");
+            TextHelper.println("greeting.evening");
         }
         System.out.println();
-    }
-
-    private void bye() {
-        Helpers.printRandomMessage(GOODBYE);
     }
 }

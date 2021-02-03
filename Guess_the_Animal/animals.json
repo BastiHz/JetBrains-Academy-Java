@@ -27,7 +27,13 @@
     "data" : "It is living in the forest."
   },
   "no" : {
-    "data" : "a shark"
+    "yes" : {
+      "data" : "a dragon"
+    },
+    "no" : {
+      "data" : "a shark"
+    },
+    "data" : "It is a fantasy animal."
   },
   "data" : "It is a mammal."
 }

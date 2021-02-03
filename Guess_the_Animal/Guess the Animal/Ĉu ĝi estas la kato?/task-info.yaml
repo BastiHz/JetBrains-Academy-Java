@@ -495,6 +495,541 @@ files:
 
     }
   learner_created: false
+- name: src/animals/KnowledgeTree.java
+  visible: true
+  text: |
+    package animals;
+
+    import com.fasterxml.jackson.databind.ObjectMapper;
+    import com.fasterxml.jackson.databind.json.JsonMapper;
+    import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+    import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+
+    import java.io.File;
+    import java.io.IOException;
+    import java.util.*;
+
+
+    class KnowledgeTree {
+
+        private TreeNode root;
+        private final String FILENAME;
+        private final ObjectMapper objectMapper;
+        private int numberOfAnimals;
+        private int numberOfFacts;
+        private int treeHeight;  // max num of edges between root and leaf
+        private int totalAnimalDepth;  // depth = num of nodes between root and animal + 1
+        private int minAnimalDepth;
+
+        KnowledgeTree(String mapperType) {
+            switch (mapperType) {
+                case "json":
+                    objectMapper = new JsonMapper();
+                    FILENAME = "animals.json";
+                    break;
+                case "xml":
+                    objectMapper = new XmlMapper();
+                    FILENAME = "animals.xml";
+                    break;
+                case "yaml":
+                    objectMapper = new YAMLMapper();
+                    FILENAME = "animals.yaml";
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid type specified.");
+            }
+        }
+
+        TreeNode getRoot() {
+            return root;
+        }
+
+        void insert(
+                TreeNode fact,
+                TreeNode parent,
+                TreeNode oldAnimal,
+                TreeNode newAnimal,
+                boolean factIsTrueForNewAnimal) {
+            if (parent == null) {
+                root = fact;
+            } else if (oldAnimal == parent.yes) {
+                parent.yes = fact;
+            } else {
+                parent.no = fact;
+            }
+
+            if (factIsTrueForNewAnimal) {
+                fact.yes = newAnimal;
+                fact.no = oldAnimal;
+            } else {
+                fact.yes = oldAnimal;
+                fact.no = newAnimal;
+            }
+        }
+
+        void load() {
+            try {
+                root = objectMapper.readValue(new File(FILENAME), TreeNode.class);
+            } catch (IOException e) {
+                root = null;
+            }
+            if (root == null || root.data == null) {
+                System.out.println("I want to learn about animals.");
+                System.out.println("Which animal do you like most?");
+                root = TreeNode.newAnimal();
+                System.out.println("Wonderful! I've learned so much about animals");
+            } else {
+                System.out.println(root.data);
+                root.initOtherFields();
+            }
+        }
+
+        void save() {
+            try {
+                objectMapper
+                     .writerWithDefaultPrettyPrinter()
+                     .writeValue(new File(FILENAME), root);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        void printAllAnimalNames() {
+            List<String> names = new ArrayList<>();
+            getAllAnimalNames(root, names);
+            Collections.sort(names);
+            System.out.println("Here are the animals I know:");
+            for (String name : names) {
+                System.out.println(" - " + name);
+            }
+        }
+
+        private void getAllAnimalNames(TreeNode node, List<String> list) {
+            if (node.isAnimal()) {
+                list.add(node.name);
+            } else {
+                getAllAnimalNames(node.yes, list);
+                getAllAnimalNames(node.no, list);
+            }
+        }
+
+        void printAllFactsForAnimal() {
+            System.out.println("Enter the animal:");
+            TreeNode animal = TreeNode.newAnimal();
+            Deque<String> facts = new ArrayDeque<>();
+            if (getAllFactsForAnimal(root, facts, animal.data)) {
+                System.out.printf("Facts about the %s:%n", animal.name);
+                while (!facts.isEmpty()) {
+                    System.out.println(" - " + facts.pollLast());
+                }
+            } else {
+                System.out.printf("No facts about the %s.%n", animal.name);
+            }
+        }
+
+        private boolean getAllFactsForAnimal(TreeNode node, Deque<String> facts, String data) {
+            if (node.isAnimal()) {
+                return node.data.equals(data);
+            }
+            if (getAllFactsForAnimal(node.yes, facts, data)) {
+                facts.addLast(node.data);
+            } else if (getAllFactsForAnimal(node.no, facts, data)) {
+                facts.addLast(node.negatedStatement);
+            } else {
+                return false;
+            }
+            return true;
+        }
+
+        void printStatistics() {
+            numberOfAnimals = 0;
+            numberOfFacts = 0;
+            treeHeight = 0;
+            totalAnimalDepth = 0;
+            minAnimalDepth = Integer.MAX_VALUE;
+            getTreeStats(root, 0);
+
+            System.out.println("The Knowledge Tree stats");
+            System.out.println();
+            System.out.println("- root node                    " + root.data);
+            System.out.printf("- total number of nodes        %d%n", numberOfAnimals + numberOfFacts);
+            System.out.println("- total number of animals      " + numberOfAnimals);
+            System.out.println("- total number of statements   " + numberOfFacts);
+            System.out.println("- height of the tree           " + treeHeight);
+            System.out.println("- minimum depth                " + minAnimalDepth);
+            System.out.printf(
+                "- average depth                %.1f%n",
+                (float) totalAnimalDepth / numberOfAnimals
+            );
+        }
+
+        private void getTreeStats(TreeNode node, int depth) {
+            if (node.isAnimal()) {
+                numberOfAnimals++;
+                if (depth < minAnimalDepth) {
+                    minAnimalDepth = depth;
+                }
+                totalAnimalDepth += depth;
+            } else {
+                numberOfFacts++;
+                getTreeStats(node.yes, depth + 1);
+                getTreeStats(node.no, depth + 1);
+            }
+            if (depth > treeHeight) {
+                treeHeight = depth;
+            }
+        }
+
+        void print() {
+            System.out.println();
+            System.out.println(" └ " + root.data);
+            if (!root.isAnimal()) {
+                printChildNode(root, "  ");
+            }
+        }
+
+        private void printChildNode(TreeNode node, String prefix) {
+            if (node.yes.isAnimal()) {
+                System.out.println(prefix + "├ " + node.yes.data);
+            } else {
+                System.out.println(prefix + "├ " + node.yes.question);
+                printChildNode(node.yes, prefix + "│");
+            }
+            if (node.no.isAnimal()) {
+                System.out.println(prefix + "└ " + node.no.data);
+            } else {
+                System.out.println(prefix + "└ " + node.no.question);
+                printChildNode(node.no, prefix + " ");
+            }
+        }
+    }
+  learner_created: true
+- name: src/animals/GuessingGame.java
+  visible: true
+  text: |
+    package animals;
+
+    import java.util.regex.Pattern;
+
+
+    public class GuessingGame {
+
+        private final Pattern YES_ANSWER = Pattern.compile(
+            "(y|yes|yeah|yep|sure|right|affirmative|correct|indeed|you bet|exactly|you said it)[.!]?",
+            Pattern.CASE_INSENSITIVE
+        );
+        private final Pattern NO_ANSWER = Pattern.compile(
+            "(n|no|no way|nah|nope|negative|i don't think so|yeah no)[.!]?",
+            Pattern.CASE_INSENSITIVE
+        );
+        private final Pattern FACT = Pattern.compile(
+            "(it can|it has|it is)\\s\\w+.*",
+            Pattern.CASE_INSENSITIVE
+        );
+        private final String[] UNCLEAR = {
+            "I'm not sure I caught you. Was it yes or no?",
+            "Funny, I still don't understand. Is it yes or no?",
+            "Oh, it's too complicated for me. Just tell me yes or no.",
+            "Could you please simply say yes or no?",
+            "Oh no, don't try to confuse me. Please say yes or no."
+        };
+        private final KnowledgeTree knowledgeTree;
+
+        GuessingGame(KnowledgeTree knowledgeTree) {
+            this.knowledgeTree = knowledgeTree;
+        }
+
+        void play() {
+            do {
+                System.out.println();
+                System.out.println("You think of an animal, and I guess it.");
+                System.out.println("Press enter when you're ready.");
+                Helpers.scanner.nextLine();
+                TreeNode currentTreeNode = knowledgeTree.getRoot();
+                TreeNode parent = null;
+                while (true) {
+                    if (currentTreeNode.isAnimal()) {
+                        System.out.printf("Is it %s?%n", currentTreeNode.data);
+                        if (getYesNo()) {
+                            System.out.println("Awesome! That was fun.");
+                        } else {
+                            System.out.println("I give up. What animal do you have in mind?");
+                            createNewFact(currentTreeNode, parent);
+                        }
+                        break;
+                    } else {
+                        System.out.println(currentTreeNode.question);
+                        parent = currentTreeNode;
+                        currentTreeNode = getYesNo() ? currentTreeNode.yes : currentTreeNode.no;
+                    }
+                }
+                System.out.println();
+                System.out.println("Would you like to play again?");
+            } while (getYesNo());
+        }
+
+        private void createNewFact(TreeNode oldAnimal, TreeNode parent) {
+            TreeNode newAnimal = TreeNode.newAnimal();
+            TreeNode fact;
+            while (true) {
+                System.out.printf("Specify a fact that distinguishes %s from %s.%n",
+                    oldAnimal.data, newAnimal.data
+                );
+                System.out.println("The sentence should be of the format: 'It can/has/is ...'.");
+                String answer = Helpers.nextLine();
+                if (FACT.matcher(answer).matches()) {
+                    fact = TreeNode.newFact(answer);
+                    break;
+                }
+                System.out.println("The examples of a statement:");
+                System.out.println(" - It can fly.");
+                System.out.println(" - It has horns.");
+                System.out.println(" - It is a mammal.");
+            }
+
+            System.out.printf("Is the statement correct for %s?%n", newAnimal.data);
+            boolean factIsTrueForNewAnimal = getYesNo();
+            knowledgeTree.insert(fact, parent, oldAnimal, newAnimal, factIsTrueForNewAnimal);
+            System.out.println("Wonderful! I've learned so much about animals!");
+        }
+
+        private boolean getYesNo() {
+            while (true) {
+                String answer = Helpers.nextLine();
+                if (YES_ANSWER.matcher(answer).matches()) {
+                    return true;
+                }
+                if (NO_ANSWER.matcher(answer).matches()) {
+                    return false;
+                }
+                Helpers.printRandomMessage(UNCLEAR);
+            }
+        }
+    }
+  learner_created: true
+- name: src/animals/TreeNode.java
+  visible: true
+  text: |
+    package animals;
+
+    import com.fasterxml.jackson.annotation.JsonIgnore;
+    import com.fasterxml.jackson.annotation.JsonInclude;
+
+    import java.util.Map;
+    import java.util.regex.Pattern;
+
+
+    // Class must either be public or have a public constructor to enable serialization.
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public class TreeNode {
+
+        // No parent Node to avoid circular references.
+        // Fields must either be public or have public getters and setters
+        // to enable serialization via jackson.
+        public TreeNode yes;
+        public TreeNode no;
+        public String data;  // Can be either the full animal name or the fact statement.
+
+        // The fields below will not be serialized.
+        static final Pattern SPACE_AFTER_ARTICLE = Pattern.compile("(?<=^(a|an))\\s");
+        static final Pattern ARTICLE_ANIMAL = Pattern.compile("^(a|an)\\s+.+");
+        static final Pattern START_VOWEL = Pattern.compile("^[aeiou].*");
+        static final Pattern DOT_BANG_END = Pattern.compile("[.!]$");
+        static final Pattern SECOND_SPACE = Pattern.compile("(?<=^\\w{1,3}\\s\\w{1,3})\\s");
+        static final Map<String, String[]> itCanHasIs = Map.of(
+            "It can", new String[] {"can't", "Can it"},
+            "It has", new String[] {"doesn't have", "Does it have"},
+            "It is", new String[] {"isn't", "Is it"}
+        );
+        String name;
+        String article;
+        String question;
+        String negatedStatement;
+
+        @JsonIgnore
+        boolean isAnimal() {
+            return yes == null && no == null;
+        }
+
+        @JsonIgnore
+        static TreeNode newAnimal() {
+            TreeNode animal = new TreeNode();
+            String input = Helpers.nextLine();
+            if (ARTICLE_ANIMAL.matcher(input).matches()) {
+                animal.data = input;
+                animal.initOtherAnimalFields();
+            } else {
+                animal.article = START_VOWEL.matcher(input).matches() ? "an" : "a";
+                animal.name = input;
+                animal.data = animal.article + " " + animal.name;
+            }
+            return animal;
+        }
+
+        @JsonIgnore
+        static TreeNode newFact(String statement) {
+            TreeNode fact = new TreeNode();
+            statement = DOT_BANG_END.matcher(statement).replaceAll("");
+            statement = Helpers.capitalizeFirst(statement);
+            fact.data = statement + ".";
+            fact.initOtherFactFields();
+            return fact;
+        }
+
+        @JsonIgnore
+        void initOtherFields() {
+            if (isAnimal()) {
+                initOtherAnimalFields();
+            } else {
+                initOtherFactFields();
+                yes.initOtherFields();
+                no.initOtherFields();
+            }
+        }
+
+        @JsonIgnore
+        private void initOtherAnimalFields() {
+            String[] parts = SPACE_AFTER_ARTICLE.split(data);
+            this.article = parts[0];
+            this.name = parts[1];
+        }
+
+        @JsonIgnore
+        private void initOtherFactFields() {
+            String[] parts = SECOND_SPACE.split(data);
+            question = String.format(
+                "%s %s?",
+                itCanHasIs.get(parts[0])[1],
+                parts[1].substring(0, parts[1].length() - 1)
+            );
+            negatedStatement = String.format("It %s %s", itCanHasIs.get(parts[0])[0], parts[1]);
+        }
+    }
+  learner_created: true
+- name: src/animals/Menu.java
+  visible: true
+  text: |
+    package animals;
+
+    import java.time.LocalTime;
+
+
+    class Menu {
+
+        private final KnowledgeTree knowledgeTree;
+        private final GuessingGame guessingGame;
+        private final String[] GOODBYE = {
+            "Bye!", "See you soon!", "Have a nice day!",
+            "Talk to you later!", "Thank you and goodbye!", "See you later!"
+        };
+
+        Menu(String mapperType) {
+            this.knowledgeTree = new KnowledgeTree(mapperType);
+            this.guessingGame = new GuessingGame(knowledgeTree);
+        }
+
+        void run() {
+            greet();
+            knowledgeTree.load();
+            System.out.println("Welcome to the animal expert system!");
+            menu();
+            knowledgeTree.save();
+            bye();
+        }
+
+        private void menu() {
+            while (true) {
+                System.out.println();
+                System.out.println("What do you want to do:");
+                System.out.println();
+                System.out.println("1. Play the guessing game");
+                System.out.println("2. List of all animals");
+                System.out.println("3. Search for an animal");
+                System.out.println("4. Calculate statistics");
+                System.out.println("5. Print the Knowledge Tree");
+                System.out.println("0. Exit");
+                String choice = Helpers.scanner.nextLine();
+                if ("0".equals(choice)) {
+                    return;
+                }
+                switch (choice) {
+                    case "1":
+                        guessingGame.play();
+                        break;
+                    case "2":
+                        knowledgeTree.printAllAnimalNames();
+                        break;
+                    case "3":
+                        knowledgeTree.printAllFactsForAnimal();
+                        break;
+                    case "4":
+                        knowledgeTree.printStatistics();
+                        break;
+                    case "5":
+                        knowledgeTree.print();
+                        break;
+                    default:
+                        System.out.println("Invalid input. Please choose a number from the list.");
+                        break;
+                }
+            }
+        }
+
+        private void greet() {
+            int currentHour = LocalTime.now().getHour();
+            if (currentHour < 5) {
+                System.out.println("Hi, early bird!");
+            } else if (currentHour < 12) {
+                System.out.println("Good morning.");
+            } else if (currentHour < 18) {
+                System.out.println("Good afternoon.");
+            } else {
+                System.out.println("Good evening.");
+            }
+            System.out.println();
+        }
+
+        private void bye() {
+            Helpers.printRandomMessage(GOODBYE);
+        }
+    }
+  learner_created: true
+- name: src/animals/TextHelper.java
+  visible: true
+  text: |
+    package animals;
+
+    import java.util.Random;
+    import java.util.Scanner;
+
+
+    class Helpers {
+
+        static final Scanner scanner = new Scanner(System.in);
+        static final Random random = new Random();
+
+        static void printRandomMessage(String[] messages) {
+            System.out.println(messages[random.nextInt(messages.length)]);
+        }
+
+        static String nextLine() {
+            return scanner.nextLine().strip().toLowerCase();
+        }
+
+        static String capitalizeFirst(String s) {
+            return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+        }
+    }
+  learner_created: true
+- name: src/main/resources/TextResource.java
+  visible: true
+  learner_created: true
+- name: src/main/resources/TextResource_eo.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/132/stages/708/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Wed, 03 Feb 2021 16:05:23 UTC
 record: -1

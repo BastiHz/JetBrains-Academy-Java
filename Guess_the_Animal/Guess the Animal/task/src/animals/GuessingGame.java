@@ -1,29 +1,26 @@
 package animals;
 
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 
 public class GuessingGame {
 
     private final Pattern YES_ANSWER = Pattern.compile(
-        "(y|yes|yeah|yep|sure|right|affirmative|correct|indeed|you bet|exactly|you said it)[.!]?",
+        TextHelper.getString("pattern.positiveAnswer"),
         Pattern.CASE_INSENSITIVE
     );
     private final Pattern NO_ANSWER = Pattern.compile(
-        "(n|no|no way|nah|nope|negative|i don't think so|yeah no)[.!]?",
+        TextHelper.getString("pattern.negativeAnswer"),
         Pattern.CASE_INSENSITIVE
     );
     private final Pattern FACT = Pattern.compile(
-        "(it can|it has|it is)\\s\\w+.*",
-        Pattern.CASE_INSENSITIVE
+        TextHelper.getString("pattern.fact"),
+        Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS
     );
-    private final String[] UNCLEAR = {
-        "I'm not sure I caught you. Was it yes or no?",
-        "Funny, I still don't understand. Is it yes or no?",
-        "Oh, it's too complicated for me. Just tell me yes or no.",
-        "Could you please simply say yes or no?",
-        "Oh no, don't try to confuse me. Please say yes or no."
-    };
+    @SuppressWarnings("unchecked")
+    private final UnaryOperator<String> getStatementRest =
+        (UnaryOperator<String>) TextHelper.getObject("fun.getStatementRest");
     private final KnowledgeTree knowledgeTree;
 
     GuessingGame(KnowledgeTree knowledgeTree) {
@@ -33,18 +30,18 @@ public class GuessingGame {
     void play() {
         do {
             System.out.println();
-            System.out.println("You think of an animal, and I guess it.");
-            System.out.println("Press enter when you're ready.");
-            Helpers.scanner.nextLine();
+            TextHelper.println("game.think");
+            TextHelper.println("game.enter");
+            TextHelper.scanner.nextLine();
             TreeNode currentTreeNode = knowledgeTree.getRoot();
             TreeNode parent = null;
             while (true) {
                 if (currentTreeNode.isAnimal()) {
-                    System.out.printf("Is it %s?%n", currentTreeNode.data);
+                    TextHelper.printf("game.guess", currentTreeNode.data);
                     if (getYesNo()) {
-                        System.out.println("Awesome! That was fun.");
+                        TextHelper.println("game.win");
                     } else {
-                        System.out.println("I give up. What animal do you have in mind?");
+                        TextHelper.println("game.giveUp");
                         createNewFact(currentTreeNode, parent);
                     }
                     break;
@@ -55,7 +52,7 @@ public class GuessingGame {
                 }
             }
             System.out.println();
-            System.out.println("Would you like to play again?");
+            TextHelper.println("game.again");
         } while (getYesNo());
     }
 
@@ -63,37 +60,47 @@ public class GuessingGame {
         TreeNode newAnimal = TreeNode.newAnimal();
         TreeNode fact;
         while (true) {
-            System.out.printf("Specify a fact that distinguishes %s from %s.%n",
-                oldAnimal.data, newAnimal.data
+            TextHelper.printf(
+                "statement.prompt",
+                new String[] {oldAnimal.data, newAnimal.data}
             );
-            System.out.println("The sentence should be of the format: 'It can/has/is ...'.");
-            String answer = Helpers.nextLine();
+            String answer = TextHelper.nextLine();
             if (FACT.matcher(answer).matches()) {
                 fact = TreeNode.newFact(answer);
                 break;
             }
-            System.out.println("The examples of a statement:");
-            System.out.println(" - It can fly.");
-            System.out.println(" - It has horns.");
-            System.out.println(" - It is a mammal.");
+            TextHelper.println("statement.error");
         }
 
-        System.out.printf("Is the statement correct for %s?%n", newAnimal.data);
+        TextHelper.printf("statement.isCorrect", newAnimal.data);
         boolean factIsTrueForNewAnimal = getYesNo();
         knowledgeTree.insert(fact, parent, oldAnimal, newAnimal, factIsTrueForNewAnimal);
-        System.out.println("Wonderful! I've learned so much about animals!");
+
+        TextHelper.println("statement.learned");
+        String positiveRest = getStatementRest.apply(fact.data);
+        String negativeRest = getStatementRest.apply(fact.negatedStatement);
+        if (factIsTrueForNewAnimal) {
+            TextHelper.printf("statement.stateLearned", new String[] {oldAnimal.name, negativeRest});
+            TextHelper.printf("statement.stateLearned", new String[] {newAnimal.name, positiveRest});
+        } else {
+            TextHelper.printf("statement.stateLearned", new String[] {oldAnimal.name, positiveRest});
+            TextHelper.printf("statement.stateLearned", new String[] {newAnimal.name, negativeRest});
+        }
+
+        TextHelper.print("animal.nice");
+        TextHelper.println("animal.learnedMuch");
     }
 
     private boolean getYesNo() {
         while (true) {
-            String answer = Helpers.nextLine();
+            String answer = TextHelper.nextLine();
             if (YES_ANSWER.matcher(answer).matches()) {
                 return true;
             }
             if (NO_ANSWER.matcher(answer).matches()) {
                 return false;
             }
-            Helpers.printRandomMessage(UNCLEAR);
+            TextHelper.println("ask.again");
         }
     }
 }
