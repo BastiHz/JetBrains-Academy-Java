@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 class SimpleBankingSystem {
     private final Map<String, Account> accounts = new HashMap<>();
-    private final String IIN = "400000";
     private final Random random = new Random();
     private final Scanner scanner = new Scanner(System.in);
     private Account currentAccount;
@@ -92,10 +91,39 @@ class SimpleBankingSystem {
     private String createCardNumber() {
         // 6 iin + 9 account number + 1 check digit = 16 digits
         String cardNumber;
+        String iin = "400000";
         do {
-            String accountNumber = String.format("%09d", random.nextInt(1_000_000_000));
-            cardNumber = IIN + accountNumber + random.nextInt(10);
+            StringBuilder stringBuilder = new StringBuilder(16);
+            stringBuilder.append(iin);
+            for (int i = 0; i < 9; i++) {
+                stringBuilder.append(random.nextInt(10));
+            }
+            appendCheckDigit(stringBuilder);
+            cardNumber = stringBuilder.toString();
         } while(accounts.containsKey(cardNumber));
         return cardNumber;
+    }
+
+    private void appendCheckDigit(StringBuilder stringBuilder) {
+        // Luhn algorithm
+        int sum = 0;
+        for (int i = 0; i < stringBuilder.length(); i++) {
+            int x = Character.getNumericValue(stringBuilder.charAt(i));
+            if (i % 2 == 0) {
+                // Modify digits at even indices because the loop starts at 0.
+                // Those are the odd digits mentioned in the task description.
+                x += x;
+                if (x > 9) {
+                    x -= 9;
+                }
+            }
+            sum += x;
+        }
+        if (sum % 10 == 0) {
+            stringBuilder.append(0);
+        } else {
+            int nextMultipleOf10 = (sum / 10 + 1) * 10;
+            stringBuilder.append(nextMultipleOf10 - sum);
+        }
     }
 }
