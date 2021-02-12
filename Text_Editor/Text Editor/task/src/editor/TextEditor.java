@@ -52,11 +52,11 @@ public class TextEditor extends JFrame {
         String searchTerm = searchField.getText();
         if (!searchTerm.isEmpty()) {
             TextSearcher textSearcher = new TextSearcher(
-                    textArea,
-                    searchTerm,
-                    useRegexCheckBox.isSelected(),
-                    searchResults,
-                    this::markSearchResult
+                textArea,
+                searchTerm,
+                useRegexCheckBox.isSelected(),
+                searchResults,
+                this::markSearchResult
             );
             textSearcher.execute();
         }

@@ -10,7 +10,7 @@
 
 <p>A general expression can contain many parentheses and operations with different priorities. It is difficult to calculate such expressions if you do not use special methods. Fortunately, there is a fairly effective and universal solution, using a stack, to calculate the most general expressions.</p>
 
-<h2>From infix to postfix</h2>
+<p><strong>From infix to postfix</strong></p>
 
 <p>Earlier we processed expressions written in infix notation. This notation is not very convenient if an expression has operations with different priorities, especially when brackets are used. But we can use <strong>postfix notation</strong>, also known as reverse <strong>Polish notation (RPN)</strong>. In this notation, operators follow their operands. See several examples below.</p>
 
@@ -49,7 +49,7 @@
 
 <p>No parentheses should remain on the stack. Otherwise, the expression has unbalanced brackets. It is a syntax error.</p>
 
-<h2>Calculating the result</h2>
+<p><strong>Calculating the result</strong></p>
 
 <p>When we have an expression in postfix notation, we can calculate it using another stack. To do that, scan the postfix expression from left to right:</p>
 

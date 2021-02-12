@@ -14,11 +14,11 @@ class TextSearcher extends SwingWorker<List<SearchResult>, SearchResult> {
     private final Consumer<SearchResult> searchResultMarker;
 
     TextSearcher (
-            JTextArea textarea,
-            String searchTerm,
-            boolean useRegex,
-            List<SearchResult> searchResults,
-            Consumer<SearchResult> searchResultMarker) {
+        JTextArea textarea,
+        String searchTerm,
+        boolean useRegex,
+        List<SearchResult> searchResults,
+        Consumer<SearchResult> searchResultMarker) {
         this.textArea = textarea;
         this.searchTerm = useRegex ? searchTerm : searchTerm.toLowerCase();
         this.useRegex = useRegex;

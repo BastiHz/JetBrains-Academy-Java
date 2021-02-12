@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/209960/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Tue, 26 Jan 2021 13:47:55 UTC
+update_date: Fri, 12 Feb 2021 12:14:49 UTC
 stages:
 - id: 294
   step: 5436
@@ -24,12 +24,12 @@ topics:
   0:
   - title: Units of information
     theory_id: 6865
-  - title: Introduction to OOP
-    theory_id: 3614
   - title: IDE
     theory_id: 10996
   - title: Write, compile, and run
     theory_id: 3739
+  - title: Introduction to OOP
+    theory_id: 3614
   - title: Introduction to Java
     theory_id: 3500
   - title: Basic literals
@@ -40,10 +40,6 @@ topics:
     theory_id: 3749
   - title: Types and variables
     theory_id: 3518
-  - title: Sizes and ranges
-    theory_id: 3532
-  - title: Type casting
-    theory_id: 3510
   - title: Comments
     theory_id: 3520
   - title: Naming variables
@@ -74,6 +70,10 @@ topics:
     theory_id: 3507
   - title: Switch statement
     theory_id: 3504
+  - title: Sizes and ranges
+    theory_id: 3532
+  - title: Type casting
+    theory_id: 3510
   - title: Calling a method
     theory_id: 10973
   - title: Declaring a method
@@ -165,14 +165,6 @@ topics:
     theory_id: 6295
   - title: Layout managers
     theory_id: 6824
-  - title: Libraries
-    theory_id: 8504
-  - title: Synchronous, asynchronous, parallel
-    theory_id: 9332
-  - title: Concurrency and parallelism
-    theory_id: 9341
-  - title: Processes and threads
-    theory_id: 9420
   - title: Threads as objects
     theory_id: 4875
   - title: Custom threads
@@ -185,6 +177,14 @@ topics:
     theory_id: 4881
   - title: States of a thread
     theory_id: 4883
+  - title: Libraries
+    theory_id: 8504
+  - title: Synchronous, asynchronous, parallel
+    theory_id: 9332
+  - title: Concurrency and parallelism
+    theory_id: 9341
+  - title: Processes and threads
+    theory_id: 9420
   - title: Default methods
     theory_id: 11354
   - title: Lambda expressions

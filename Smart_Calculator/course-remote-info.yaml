@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/203965/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Tue, 19 Jan 2021 11:34:24 UTC
+update_date: Fri, 12 Feb 2021 12:45:51 UTC
 stages:
 - id: 220
   step: 5316
@@ -66,16 +66,16 @@ topics:
   1:
   - title: Units of information
     theory_id: 6865
-  - title: Sizes and ranges
-    theory_id: 3532
-  - title: Type casting
-    theory_id: 3510
   - title: Characters
     theory_id: 3514
   - title: The while and do-while loops
     theory_id: 3498
   - title: Branching statements
     theory_id: 3507
+  - title: Sizes and ranges
+    theory_id: 3532
+  - title: Type casting
+    theory_id: 3510
   - title: Calling a method
     theory_id: 10973
   - title: Primitive and reference types
@@ -91,16 +91,16 @@ topics:
   - title: Processing strings
     theory_id: 3551
   2:
-  - title: Write, compile, and run
-    theory_id: 3739
-  - title: JVM, JRE, and JDK
-    theory_id: 3499
   - title: Introduction to operating systems
     theory_id: 9704
   - title: Command line overview
     theory_id: 8977
   - title: Parameters and options
     theory_id: 9746
+  - title: Write, compile, and run
+    theory_id: 3739
+  - title: JVM, JRE, and JDK
+    theory_id: 3499
   - title: Running programs on your computer
     theory_id: 3746
   - title: Declaring a method
@@ -108,12 +108,6 @@ topics:
   - title: Arrays as parameters
     theory_id: 3594
   3:
-  - title: Introduction to OOP
-    theory_id: 3614
-  - title: IDE
-    theory_id: 10996
-  - title: Regexps basics
-    theory_id: 7580
   - title: Regexps in Java
     theory_id: 3670
   - title: Sets, ranges, alternations
@@ -124,12 +118,18 @@ topics:
     theory_id: 3687
   - title: Regexes in programs
     theory_id: 3696
+  - title: IDE
+    theory_id: 10996
   - title: Patterns and Matcher
     theory_id: 3712
   - title: Replacing characters
     theory_id: 3708
+  - title: Introduction to OOP
+    theory_id: 3614
   - title: Switch statement
     theory_id: 3504
+  - title: Regexps basics
+    theory_id: 7580
   - title: The main method
     theory_id: 3489
   - title: Functional decomposition
@@ -188,6 +188,10 @@ topics:
     theory_id: 4991
   - title: Data structures
     theory_id: 5161
+  - title: 'Hashing: overview'
+    theory_id: 9831
+  - title: Hash table
+    theory_id: 5364
   - title: NPE
     theory_id: 1945
   - title: Generic programming
@@ -200,10 +204,6 @@ topics:
     theory_id: 3624
   - title: Set
     theory_id: 3575
-  - title: 'Hashing: overview'
-    theory_id: 9831
-  - title: Hash table
-    theory_id: 5364
   - title: Map
     theory_id: 3558
   - title: Protected modifier
