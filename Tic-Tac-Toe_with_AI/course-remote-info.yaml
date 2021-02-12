@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/262721/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Wed, 20 Jan 2021 10:21:41 UTC
+update_date: Fri, 12 Feb 2021 11:56:06 UTC
 stages:
 - id: 447
   step: 7434
@@ -36,10 +36,6 @@ topics:
     theory_id: 3749
   - title: Types and variables
     theory_id: 3518
-  - title: Sizes and ranges
-    theory_id: 3532
-  - title: Type casting
-    theory_id: 3510
   - title: Comments
     theory_id: 3520
   - title: Naming variables
@@ -70,6 +66,10 @@ topics:
     theory_id: 3507
   - title: Switch statement
     theory_id: 3504
+  - title: Sizes and ranges
+    theory_id: 3532
+  - title: Type casting
+    theory_id: 3510
   - title: Calling a method
     theory_id: 10973
   - title: Primitive and reference types
@@ -85,10 +85,10 @@ topics:
   - title: Errors in programs
     theory_id: 3536
   1:
-  - title: Introduction to OOP
-    theory_id: 3614
   - title: IDE
     theory_id: 10996
+  - title: Introduction to OOP
+    theory_id: 3614
   - title: Declaring a method
     theory_id: 10982
   - title: The main method
@@ -146,10 +146,10 @@ topics:
     theory_id: 5161
   - title: Stack
     theory_id: 5252
-  - title: Recursion basics
-    theory_id: 5984
   - title: Call stack
     theory_id: 5135
+  - title: Recursion basics
+    theory_id: 5984
   - title: Recursion
     theory_id: 3550
   - title: Protected modifier

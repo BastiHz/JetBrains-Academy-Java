@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/203023/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Fri, 22 Jan 2021 09:39:27 UTC
+update_date: Fri, 12 Feb 2021 11:53:42 UTC
 stages:
 - id: 201
   step: 5258
@@ -19,20 +19,28 @@ stages:
   is_completed: true
 topics:
   0:
-  - title: Units of information
-    theory_id: 6865
-  - title: Introduction to OOP
-    theory_id: 3614
+  - title: The basic window in Swing
+    theory_id: 5514
+  - title: Swing components
+    theory_id: 6295
   - title: Immutability
     theory_id: 7929
-  - title: Libraries
-    theory_id: 8504
+  - title: Units of information
+    theory_id: 6865
+  - title: Introduction to operating systems
+    theory_id: 9704
   - title: IDE
     theory_id: 10996
+  - title: Command line overview
+    theory_id: 8977
+  - title: Parameters and options
+    theory_id: 9746
   - title: Write, compile, and run
     theory_id: 3739
   - title: JVM, JRE, and JDK
     theory_id: 3499
+  - title: Running programs on your computer
+    theory_id: 3746
   - title: What is an exception
     theory_id: 3497
   - title: Hierarchy of exceptions
@@ -43,24 +51,14 @@ topics:
     theory_id: 1945
   - title: Generic programming
     theory_id: 3492
-  - title: The basic window in Swing
-    theory_id: 5514
-  - title: Swing components
-    theory_id: 6295
-  - title: Introduction to operating systems
-    theory_id: 9704
-  - title: Command line overview
-    theory_id: 8977
-  - title: Parameters and options
-    theory_id: 9746
-  - title: Running programs on your computer
-    theory_id: 3746
   - title: Files
     theory_id: 3635
   - title: Reading files
     theory_id: 3636
   - title: Writing files
     theory_id: 3652
+  - title: Introduction to OOP
+    theory_id: 3614
   - title: Introduction to Java
     theory_id: 3500
   - title: Basic literals
@@ -71,10 +69,6 @@ topics:
     theory_id: 3749
   - title: Types and variables
     theory_id: 3518
-  - title: Sizes and ranges
-    theory_id: 3532
-  - title: Type casting
-    theory_id: 3510
   - title: Comments
     theory_id: 3520
   - title: Naming variables
@@ -105,6 +99,12 @@ topics:
     theory_id: 3507
   - title: Switch statement
     theory_id: 3504
+  - title: Libraries
+    theory_id: 8504
+  - title: Sizes and ranges
+    theory_id: 3532
+  - title: Type casting
+    theory_id: 3510
   - title: Calling a method
     theory_id: 10973
   - title: Declaring a method
@@ -213,8 +213,8 @@ topics:
   - title: The Object class
     theory_id: 3596
   2:
-  - title: Regexps basics
-    theory_id: 7580
+  - title: JMenu
+    theory_id: 6427
   - title: Regexps in Java
     theory_id: 3670
   - title: Sets, ranges, alternations
@@ -229,15 +229,11 @@ topics:
     theory_id: 3712
   - title: Match results
     theory_id: 3716
-  - title: JMenu
-    theory_id: 6427
+  - title: Regexps basics
+    theory_id: 7580
   3:
-  - title: Synchronous, asynchronous, parallel
-    theory_id: 9332
-  - title: Concurrency and parallelism
-    theory_id: 9341
-  - title: Processes and threads
-    theory_id: 9420
+  - title: Multithreading in Swing
+    theory_id: 11299
   - title: Threads as objects
     theory_id: 4875
   - title: Custom threads
@@ -250,8 +246,12 @@ topics:
     theory_id: 3610
   - title: Thread synchronization
     theory_id: 3557
-  - title: Multithreading in Swing
-    theory_id: 11299
+  - title: Synchronous, asynchronous, parallel
+    theory_id: 9332
+  - title: Concurrency and parallelism
+    theory_id: 9341
+  - title: Processes and threads
+    theory_id: 9420
   - title: Initialization blocks
     theory_id: 3533
   - title: Abstract class
