@@ -56,9 +56,13 @@ class Menu {
 
     boolean runAccountMenu(String cardNumber) {
         System.out.println("\nYou have successfully logged in!");
+        int amount;
         while (true) {
             System.out.println("\n1. Balance");
-            System.out.println("2. Log out");
+            System.out.println("2. Add income");
+            System.out.println("3. Do transfer");
+            System.out.println("4. Close account");
+            System.out.println("5. Log out");
             System.out.println("0. Exit");
             String input = scanner.nextLine();
             switch (input) {
@@ -68,6 +72,39 @@ class Menu {
                     System.out.println("\nBalance: " + accountController.getBalance(cardNumber));
                     break;
                 case "2":
+                    System.out.println("\nEnter the income:");
+                    amount = scanner.nextInt();
+                    scanner.nextLine();  // consume leftover newline
+                    if (amount <= 0) {
+                        System.out.println("The amount must be positive!");
+                    }
+                    accountController.addIncome(cardNumber, amount);
+                    break;
+                case "3":
+                    System.out.println("\nTransfer\nEnter card number:");
+                    String targetCardNumber = scanner.nextLine();
+                    if (cardNumber.equals(targetCardNumber)) {
+                        System.out.println("You can't transfer money to the same account!");
+                        break;
+                    }
+                    if (accountController.checkInvalidTargetCardNumber(targetCardNumber)) {
+                        break;
+                    }
+                    System.out.println("Enter how much money you want to transfer:");
+                    amount = scanner.nextInt();
+                    scanner.nextLine();  // consume leftover newline
+                    if (amount <= 0) {
+                        System.out.println("The amount must be positive!");
+                    } else if (amount > accountController.getBalance(cardNumber)) {
+                        System.out.println("Not enough money!");
+                    } else {
+                        accountController.transfer(cardNumber, targetCardNumber, amount);
+                    }
+                    break;
+                case "4":
+                    accountController.closeAccount(cardNumber);
+                    return false;
+                case "5":
                     System.out.println("\nYou have successfully logged out!\n");
                     return false;
                 default:
