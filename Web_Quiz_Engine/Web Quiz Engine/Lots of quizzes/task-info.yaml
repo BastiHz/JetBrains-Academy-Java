@@ -241,6 +241,87 @@ files:
         }
     }
   learner_created: false
+- name: src/engine/QuizController.java
+  visible: true
+  text: |
+    package engine;
+
+
+    import org.springframework.web.bind.annotation.GetMapping;
+    import org.springframework.web.bind.annotation.PostMapping;
+    import org.springframework.web.bind.annotation.RequestParam;
+    import org.springframework.web.bind.annotation.RestController;
+
+    @RestController
+    public class QuizController {
+
+        Question question = new Question(
+            "The Java Logo",
+            "What is depicted on the Java logo?",
+            new String[] {"Robot", "Tea leaf", "Cup of coffee", "Bug"}
+        );
+
+        @GetMapping(path = "/api/quiz")
+        Question getQuestion() {
+            return question;
+        }
+
+        @PostMapping(path = "/api/quiz")
+        Response checkAnswer(@RequestParam int answer) {
+            return Response.get(answer == 2);
+        }
+    }
+  learner_created: true
+- name: src/engine/Response.java
+  visible: true
+  text: |
+    package engine;
+
+    import com.fasterxml.jackson.annotation.JsonFormat;
+
+    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+    public enum Response {
+
+        SUCCESS(true, "Congratulations, you're right!"),
+        FAIL(false, "Wrong answer! Please, try again.");
+
+        public boolean success;
+        public String feedback;
+
+        Response(boolean success, String feedback) {
+            this.success = success;
+            this.feedback = feedback;
+        }
+
+        static Response get(boolean answerIsCorrect) {
+            return answerIsCorrect ? SUCCESS : FAIL;
+        }
+    }
+  learner_created: true
+- name: src/engine/Quiz.java
+  visible: true
+  text: |
+    package engine;
+
+    public class Question {
+
+        public final String title;
+        public final String text;
+        public final String[] options;
+
+        Question(String title, String text, String[] options) {
+            this.title = title;
+            this.text = text;
+            this.options = options;
+        }
+    }
+  learner_created: true
+- name: src/engine/QuizStorage.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/91/stages/505/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Mon, 22 Feb 2021 16:58:06 UTC
 record: -1

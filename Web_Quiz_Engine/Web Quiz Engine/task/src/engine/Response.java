@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Response {
+    // https://www.baeldung.com/jackson-serialize-enums
 
-    SUCCESS(true, "Congratulations, you're right!"),
-    FAIL(false, "Wrong answer! Please, try again.");
+    CORRECT_ANSWER(true, "Congratulations, you're right!"),
+    WRONG_ANSWER(false, "Wrong answer! Please, try again.");
 
-    public boolean success;
-    public String feedback;
+    private final boolean success;
+    private final String feedback;
 
     Response(boolean success, String feedback) {
         this.success = success;
@@ -17,6 +18,14 @@ public enum Response {
     }
 
     static Response get(boolean answerIsCorrect) {
-        return answerIsCorrect ? SUCCESS : FAIL;
+        return answerIsCorrect ? CORRECT_ANSWER : WRONG_ANSWER;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public String getFeedback() {
+        return feedback;
     }
 }

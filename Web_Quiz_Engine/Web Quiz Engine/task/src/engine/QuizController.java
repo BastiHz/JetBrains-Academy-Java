@@ -1,27 +1,32 @@
 package engine;
 
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
 public class QuizController {
 
-    Question question = new Question(
-        "The Java Logo",
-        "What is depicted on the Java logo?",
-        new String[] {"Robot", "Tea leaf", "Cup of coffee", "Bug"}
-    );
+    QuizStorage quizStorage = new QuizStorage();
 
-    @GetMapping(path = "/api/quiz")
-    Question getQuestion() {
-        return question;
+    @PostMapping(path = "/api/quizzes", consumes = "application/json")
+    Quiz addQuiz(@RequestBody Quiz quiz) {
+        quizStorage.addQuiz(quiz);
+        return quiz;
     }
 
-    @PostMapping(path = "/api/quiz")
-    Response checkAnswer(@RequestParam int answer) {
-        return Response.get(answer == 2);
+    @GetMapping(path = "/api/quizzes/{id}")
+    Quiz getQuiz(@PathVariable int id) {
+        return quizStorage.getById(id);
+    }
+
+    @GetMapping(path = "/api/quizzes")
+    List<Quiz> getAllQuizzes() {
+        return quizStorage.getAll();
+    }
+
+    @PostMapping(path = "/api/quizzes/{id}/solve")
+    Response checkAnswer(@PathVariable int id, @RequestParam int answer) {
+        return quizStorage.checkAnswer(id, answer);
     }
 }
