@@ -3,13 +3,21 @@ package engine;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class Quiz {
 
     private int id;
+    @NotBlank
     private String title;
+    @NotBlank
     private String text;
+    @NotNull
+    @Size(min = 2)
     private String[] options;
-    private int answer;
+    private int[] answer = new int[0];
 
     public void setId(int id) {
         this.id = id;
@@ -46,13 +54,12 @@ public class Quiz {
     // Using @JsonProperty for the setter enables setting it with @RequestBody.
     // This is necessary because of the @JsonIgnore above the getter.
     @JsonProperty
-    public void setAnswer(int answer) {
+    public void setAnswer(int[] answer) {
         this.answer = answer;
     }
 
-    // Using @JsonIgnore for the getter avoids revealing the answer to the client.
-    @JsonIgnore
-    public int getAnswer() {
+    @JsonIgnore  // Avoid revealing the answer to the client.
+    public int[] getAnswer() {
         return answer;
     }
 }

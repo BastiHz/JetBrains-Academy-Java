@@ -440,6 +440,145 @@ files:
         }
     }
   learner_created: false
+- name: src/engine/Quiz.java
+  visible: true
+  text: |
+    package engine;
+
+    import com.fasterxml.jackson.annotation.JsonIgnore;
+    import com.fasterxml.jackson.annotation.JsonProperty;
+
+    public class Quiz {
+
+        private int id;
+        private String title;
+        private String text;
+        private String[] options;
+        private int answer;
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setOptions(String[] options) {
+            this.options = options;
+        }
+
+        public String[] getOptions() {
+            return options;
+        }
+
+        // Using @JsonProperty for the setter enables setting it with @RequestBody.
+        // This is necessary because of the @JsonIgnore above the getter.
+        @JsonProperty
+        public void setAnswer(int answer) {
+            this.answer = answer;
+        }
+
+        // Using @JsonIgnore for the getter avoids revealing the answer to the client.
+        @JsonIgnore
+        public int getAnswer() {
+            return answer;
+        }
+    }
+  learner_created: true
+- name: src/engine/QuizController.java
+  visible: true
+  text: |
+    package engine;
+
+    import org.springframework.web.bind.annotation.*;
+
+    import java.util.List;
+
+    @RestController
+    public class QuizController {
+
+        QuizStorage quizStorage = new QuizStorage();
+
+        @PostMapping(path = "/api/quizzes", consumes = "application/json")
+        Quiz addQuiz(@RequestBody Quiz quiz) {
+            quizStorage.addQuiz(quiz);
+            return quiz;
+        }
+
+        @GetMapping(path = "/api/quizzes/{id}")
+        Quiz getQuiz(@PathVariable int id) {
+            return quizStorage.getById(id);
+        }
+
+        @GetMapping(path = "/api/quizzes")
+        List<Quiz> getAllQuizzes() {
+            return quizStorage.getAll();
+        }
+
+        @PostMapping(path = "/api/quizzes/{id}/solve")
+        Response checkAnswer(@PathVariable int id, @RequestParam int answer) {
+            return quizStorage.checkAnswer(id, answer);
+        }
+    }
+  learner_created: true
+- name: src/engine/Response.java
+  visible: true
+  text: |
+    package engine;
+
+    import com.fasterxml.jackson.annotation.JsonFormat;
+
+    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+    public enum Response {
+        // https://www.baeldung.com/jackson-serialize-enums
+
+        CORRECT_ANSWER(true, "Congratulations, you're right!"),
+        WRONG_ANSWER(false, "Wrong answer! Please, try again.");
+
+        private final boolean success;
+        private final String feedback;
+
+        Response(boolean success, String feedback) {
+            this.success = success;
+            this.feedback = feedback;
+        }
+
+        static Response get(boolean answerIsCorrect) {
+            return answerIsCorrect ? CORRECT_ANSWER : WRONG_ANSWER;
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public String getFeedback() {
+            return feedback;
+        }
+    }
+  learner_created: true
+- name: src/engine/Answer.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/91/stages/506/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Tue, 23 Feb 2021 14:52:10 UTC
 record: -1
