@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/287312/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Wed, 24 Feb 2021 17:32:42 UTC
+update_date: Wed, 24 Feb 2021 22:33:03 UTC
 stages:
 - id: 504
   step: 8252
@@ -19,20 +19,12 @@ stages:
   is_completed: true
 - id: 508
   step: 8256
-  is_completed: false
+  is_completed: true
 - id: 509
   step: 8257
   is_completed: false
 topics:
   0:
-  - title: Introduction to Spring Boot
-    theory_id: 7944
-  - title: Getting started with Spring Boot
-    theory_id: 6336
-  - title: Basic project structure
-    theory_id: 6339
-  - title: Rest controller
-    theory_id: 7015
   - title: Immutability
     theory_id: 7929
   - title: Units of information
@@ -67,12 +59,18 @@ topics:
     theory_id: 6752
   - title: REST
     theory_id: 7834
+  - title: Introduction to Spring boot
+    theory_id: 7944
   - title: Postman
     theory_id: 8512
   - title: Write, compile, and run
     theory_id: 3739
   - title: JVM, JRE, and JDK
     theory_id: 3499
+  - title: Getting started with Spring Boot
+    theory_id: 6336
+  - title: Basic project structure
+    theory_id: 6339
   - title: What is an exception
     theory_id: 3497
   - title: NPE
@@ -83,6 +81,8 @@ topics:
     theory_id: 3770
   - title: ArrayList
     theory_id: 3567
+  - title: Rest controller
+    theory_id: 7015
   - title: Introduction to OOP
     theory_id: 3614
   - title: External resources
@@ -200,10 +200,6 @@ topics:
   - title: Boxing and unboxing
     theory_id: 3595
   1:
-  - title: Beans and components
-    theory_id: 7353
-  - title: Passing JSON to server
-    theory_id: 7165
   - title: 'Hashing: overview'
     theory_id: 9831
   - title: Hash table
@@ -220,6 +216,10 @@ topics:
     theory_id: 3575
   - title: Map
     theory_id: 3558
+  - title: Passing JSON to server
+    theory_id: 7165
+  - title: Beans and components
+    theory_id: 7353
   - title: Protected modifier
     theory_id: 6692
   - title: Referencing subclass objects
@@ -231,10 +231,6 @@ topics:
   - title: Interface
     theory_id: 3615
   2:
-  - title: Exception handling
-    theory_id: 8780
-  - title: Bean Validation
-    theory_id: 9355
   - title: Regexps in Java
     theory_id: 3670
   - title: Sets, ranges, alternations
@@ -245,6 +241,10 @@ topics:
     theory_id: 3687
   - title: Regexes in programs
     theory_id: 3696
+  - title: Exception handling
+    theory_id: 8780
+  - title: Bean Validation
+    theory_id: 9355
   - title: Regexps basics
     theory_id: 7580
   3:

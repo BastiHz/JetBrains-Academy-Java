@@ -5,11 +5,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public class MyUserPrincipal implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private User user;
 
-    public MyUserPrincipal(User user) {
+    public CustomUserDetails(User user) {
         this.user = user;
     }
 
@@ -30,21 +30,21 @@ public class MyUserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

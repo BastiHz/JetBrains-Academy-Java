@@ -2,15 +2,15 @@ package engine;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.security.Principal;
+import java.util.*;
 
 @RestController
 @Validated
@@ -20,13 +20,28 @@ public class QuizController {
     @Autowired
     private QuizRepository quizRepository;
 
-    @PostMapping(consumes = "application/json")
-    Quiz addQuiz(@RequestBody @Valid Quiz quiz) {
-        // TODO: Get currently logged in user to assign a user to the quiz.
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    Quiz addQuiz(@RequestBody @Valid Quiz quiz, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName());
+        quiz.setUser(user);
         return quizRepository.save(quiz);
     }
 
-    @GetMapping()
+    @DeleteMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteQuiz(@PathVariable int id, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName());
+        Quiz quiz = quizRepository.findById(id).orElseThrow();
+        if (user.getId() != quiz.getUser().getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        quizRepository.delete(quiz);
+    }
+
+    @GetMapping
     List<Quiz> getAllQuizzes() {
         return quizRepository.findAll();
     }
@@ -39,7 +54,28 @@ public class QuizController {
     @PostMapping(path = "/{id}/solve")
     Response checkAnswer(@PathVariable @Min(0) int id, @RequestBody Answer answer) {
         Quiz quiz = quizRepository.findById(id).orElseThrow();
-        return Response.get(Arrays.equals(quiz.getAnswer(), answer.getAnswer()));
+        boolean isCorrect = isAnswerCorrect(quiz.getAnswer(), answer.getAnswer());
+        return Response.get(isCorrect);
+    }
+
+    private boolean isAnswerCorrect(List<Integer> expected, List<Integer> given) {
+        if (expected == null && given == null) {
+            return true;
+        } else if (given == null) {
+            given = new ArrayList<>();
+        } else if (expected == null) {
+            expected = new ArrayList<>();
+        } else if (expected.size() != given.size()) {
+            return false;
+        }
+        Collections.sort(expected);
+        Collections.sort(given);
+        for (int i = 0; i < expected.size(); i++) {
+            if (!expected.get(i).equals(given.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @ExceptionHandler(NoSuchElementException.class)

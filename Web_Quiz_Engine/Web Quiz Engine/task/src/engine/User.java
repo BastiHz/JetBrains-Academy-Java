@@ -1,8 +1,8 @@
 package engine;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -13,7 +13,7 @@ public class User {
     private int id;
 
     @NotBlank
-    @Email
+    @Pattern(regexp = "\\w+@\\w+\\.\\w+")
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -28,8 +28,12 @@ public class User {
     public String getPassword() {
         return password;
     }
-}
 
-// Role?
-// password encryption?
-// OneToMany user -> quizzes?
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getId() {
+        return id;
+    }
+}

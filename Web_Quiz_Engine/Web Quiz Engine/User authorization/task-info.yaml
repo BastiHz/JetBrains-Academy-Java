@@ -659,22 +659,6 @@ files:
         }
     }
   learner_created: false
-- name: src/engine/UserController.java
-  visible: true
-  text: |
-    package engine;
-
-    import org.springframework.validation.annotation.Validated;
-    import org.springframework.web.bind.annotation.PostMapping;
-    import org.springframework.web.bind.annotation.RestController;
-
-    @RestController
-    @Validated
-    public class UserController {
-
-        @PostMapping()
-    }
-  learner_created: true
 - name: src/engine/QuizRepository.java
   visible: true
   text: |
@@ -880,12 +864,34 @@ files:
 - name: src/engine/SecurityConfig.java
   visible: true
   learner_created: true
-- name: src/engine/MyUserDetailsService.java
+- name: src/engine/UserRegistrationController.java
+  visible: true
+  text: |
+    package engine;
+
+    import org.springframework.validation.annotation.Validated;
+    import org.springframework.web.bind.annotation.PostMapping;
+    import org.springframework.web.bind.annotation.RestController;
+
+    @RestController
+    @Validated
+    public class UserController {
+
+        @PostMapping()
+    }
+  learner_created: true
+- name: src/engine/CustomUserDetails.java
   visible: true
   learner_created: true
-- name: src/engine/MyUserPrincipal.java
+- name: src/engine/CustomUserDetailsService.java
+  visible: true
+  learner_created: true
+- name: quizdb.mv.db
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/projects/91/stages/508/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Wed, 24 Feb 2021 23:10:50 UTC
 record: -1
