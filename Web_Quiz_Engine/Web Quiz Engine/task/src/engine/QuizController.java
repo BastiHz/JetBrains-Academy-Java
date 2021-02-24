@@ -10,36 +10,39 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @Validated
+@RequestMapping(path = "/api/quizzes")
 public class QuizController {
 
     @Autowired
-    QuizRepository quizRepository;
-    private static final ResponseStatusException idNotFoundException =
-        new ResponseStatusException(HttpStatus.NOT_FOUND, "Id not found.");
+    private QuizRepository quizRepository;
 
-    @PostMapping(path = "/api/quizzes", consumes = "application/json")
+    @PostMapping(consumes = "application/json")
     Quiz addQuiz(@RequestBody @Valid Quiz quiz) {
+        // TODO: Get currently logged in user to assign a user to the quiz.
         return quizRepository.save(quiz);
     }
 
-    @GetMapping(path = "/api/quizzes/{id}")
-    Quiz getQuiz(@PathVariable @Min(0) int id) {
-        return quizRepository.findById(id)
-            .orElseThrow(() -> idNotFoundException);
-    }
-
-    @GetMapping(path = "/api/quizzes")
+    @GetMapping()
     List<Quiz> getAllQuizzes() {
         return quizRepository.findAll();
     }
 
-    @PostMapping(path = "/api/quizzes/{id}/solve")
+    @GetMapping(path = "/{id}")
+    Quiz getQuiz(@PathVariable @Min(0) int id) {
+        return quizRepository.findById(id).orElseThrow();
+    }
+
+    @PostMapping(path = "/{id}/solve")
     Response checkAnswer(@PathVariable @Min(0) int id, @RequestBody Answer answer) {
-        Quiz quiz = quizRepository.findById(id)
-            .orElseThrow(() -> idNotFoundException);
+        Quiz quiz = quizRepository.findById(id).orElseThrow();
         return Response.get(Arrays.equals(quiz.getAnswer(), answer.getAnswer()));
     }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Id not found.")
+    void handleWrongIdException() {}
 }

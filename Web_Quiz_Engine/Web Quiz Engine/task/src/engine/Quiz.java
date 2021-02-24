@@ -17,13 +17,17 @@ public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
     @NotBlank
     private String title;
+
     @NotBlank
     private String text;
+
     @NotNull
     @Size(min = 2)
     private String[] options;
+
     private int[] answer = new int[0];
 
     public long getId() {
