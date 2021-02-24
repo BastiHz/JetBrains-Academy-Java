@@ -464,6 +464,188 @@ files:
         }
     }
   learner_created: false
+- name: src/engine/Answer.java
+  visible: true
+  text: |
+    package engine;
+
+    public class Answer {
+
+        private int[] answer;
+
+        public void setAnswer(int[] answer) {
+            this.answer = answer;
+        }
+
+        public int[] getAnswer() {
+            return answer;
+        }
+    }
+  learner_created: true
+- name: src/engine/Quiz.java
+  visible: true
+  text: |
+    package engine;
+
+    import com.fasterxml.jackson.annotation.JsonIgnore;
+    import com.fasterxml.jackson.annotation.JsonProperty;
+
+    import javax.validation.constraints.NotBlank;
+    import javax.validation.constraints.NotNull;
+    import javax.validation.constraints.Size;
+
+    public class Quiz {
+
+        private int id;
+        @NotBlank
+        private String title;
+        @NotBlank
+        private String text;
+        @NotNull
+        @Size(min = 2)
+        private String[] options;
+        private int[] answer = new int[0];
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setOptions(String[] options) {
+            this.options = options;
+        }
+
+        public String[] getOptions() {
+            return options;
+        }
+
+        // Using @JsonProperty for the setter enables setting it with @RequestBody.
+        // This is necessary because of the @JsonIgnore above the getter.
+        @JsonProperty
+        public void setAnswer(int[] answer) {
+            this.answer = answer;
+        }
+
+        @JsonIgnore  // Avoid revealing the answer to the client.
+        public int[] getAnswer() {
+            return answer;
+        }
+    }
+  learner_created: true
+- name: src/engine/QuizController.java
+  visible: true
+  text: |
+    package engine;
+
+    import org.springframework.http.HttpStatus;
+    import org.springframework.validation.annotation.Validated;
+    import org.springframework.web.bind.annotation.*;
+
+    import javax.validation.Valid;
+    import javax.validation.constraints.Min;
+    import java.util.ArrayList;
+    import java.util.Arrays;
+    import java.util.List;
+
+    @RestController
+    @Validated
+    public class QuizController {
+
+        private final List<Quiz> quizzes = new ArrayList<>();
+        private static final String ID_NOT_FOUND_MESSAGE = "Quiz not found.";
+
+        @PostMapping(path = "/api/quizzes", consumes = "application/json")
+        Quiz addQuiz(@RequestBody @Valid Quiz quiz) {
+            quiz.setId(quizzes.size());
+            quizzes.add(quiz);
+            return quiz;
+        }
+
+        @GetMapping(path = "/api/quizzes/{id}")
+        Quiz getQuiz(@PathVariable @Min(0) int id) {
+            return quizzes.get(id);
+        }
+
+        @GetMapping(path = "/api/quizzes")
+        List<Quiz> getAllQuizzes() {
+            return quizzes;
+        }
+
+        @PostMapping(path = "/api/quizzes/{id}/solve")
+        Response checkAnswer(@PathVariable @Min(0) int id, @RequestBody Answer answer) {
+            Quiz quiz = quizzes.get(id);
+            return Response.get(Arrays.equals(quiz.getAnswer(), answer.getAnswer()));
+        }
+
+        @ExceptionHandler(IndexOutOfBoundsException.class)
+        @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = ID_NOT_FOUND_MESSAGE)
+        void handleIndexOutOfBoundsException() {
+        }
+    }
+  learner_created: true
+- name: src/engine/Response.java
+  visible: true
+  text: |
+    package engine;
+
+    import com.fasterxml.jackson.annotation.JsonFormat;
+
+    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+    public enum Response {
+        // https://www.baeldung.com/jackson-serialize-enums
+
+        CORRECT_ANSWER(true, "Congratulations, you're right!"),
+        WRONG_ANSWER(false, "Wrong answer! Please, try again.");
+
+        private final boolean success;
+        private final String feedback;
+
+        Response(boolean success, String feedback) {
+            this.success = success;
+            this.feedback = feedback;
+        }
+
+        static Response get(boolean answerIsCorrect) {
+            return answerIsCorrect ? CORRECT_ANSWER : WRONG_ANSWER;
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public String getFeedback() {
+            return feedback;
+        }
+    }
+  learner_created: true
+- name: src/engine/QuizRepository.java
+  visible: true
+  learner_created: true
+- name: quizdb.mv.db
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/91/stages/507/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Wed, 24 Feb 2021 13:36:34 UTC
 record: -1
