@@ -793,6 +793,482 @@ files:
         }
     }
   learner_created: false
+- name: src/engine/UserRegistrationController.java
+  visible: true
+  text: |
+    package engine;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.MediaType;
+    import org.springframework.security.crypto.password.PasswordEncoder;
+    import org.springframework.validation.annotation.Validated;
+    import org.springframework.web.bind.annotation.*;
+    import org.springframework.web.server.ResponseStatusException;
+
+    import javax.validation.Valid;
+
+    @RestController
+    @Validated
+    @RequestMapping(path = "/api/register")
+    public class UserRegistrationController {
+
+        @Autowired
+        private UserRepository userRepository;
+
+        @Autowired
+        private PasswordEncoder passwordEncoder;
+
+        @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+        void register(@RequestBody @Valid User user) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            try {
+                userRepository.save(user);
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
+  learner_created: true
+- name: src/engine/CustomUserDetails.java
+  visible: true
+  text: |
+    package engine;
+
+    import org.springframework.security.core.GrantedAuthority;
+    import org.springframework.security.core.userdetails.UserDetails;
+
+    import java.util.Collection;
+
+    public class CustomUserDetails implements UserDetails {
+
+        private User user;
+
+        public CustomUserDetails(User user) {
+            this.user = user;
+        }
+
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            return null;
+        }
+
+        @Override
+        public String getUsername() {
+            return user.getEmail();
+        }
+
+        @Override
+        public String getPassword() {
+            return user.getPassword();
+        }
+
+        @Override
+        public boolean isAccountNonExpired() {
+            return true;
+        }
+
+        @Override
+        public boolean isAccountNonLocked() {
+            return true;
+        }
+
+        @Override
+        public boolean isCredentialsNonExpired() {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return true;
+        }
+    }
+  learner_created: true
+- name: src/engine/SecurityConfig.java
+  visible: true
+  text: |
+    package engine;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+    import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+    import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+    import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+    import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+    import org.springframework.security.config.http.SessionCreationPolicy;
+    import org.springframework.security.core.userdetails.UserDetailsService;
+    import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+    import org.springframework.security.crypto.password.PasswordEncoder;
+
+    @Configuration
+    @EnableWebSecurity
+    public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+        @Bean
+        public UserDetailsService userDetailsService() {
+            return new CustomUserDetailsService();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        public DaoAuthenticationProvider authenticationProvider() {
+            DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+            authProvider.setUserDetailsService(userDetailsService());
+            authProvider.setPasswordEncoder(passwordEncoder());
+            return authProvider;
+        }
+
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.authenticationProvider(authenticationProvider());
+        }
+
+        @Autowired
+        public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+            auth.authenticationProvider(authenticationProvider());
+        }
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                .authorizeRequests()
+                .antMatchers("/api/register/**", "/actuator/shutdown/**", "/h2-console/**")
+                .permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .httpBasic();
+
+            // Gain access to the h2-console in the browser, for testing.
+            // Do not use in a real product!
+            http
+                .csrf().disable()
+                .headers().frameOptions().disable();
+
+            http
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        }
+    }
+  learner_created: true
+- name: quizdb.mv.db
+  visible: true
+  learner_created: true
+- name: src/engine/UserRepository.java
+  visible: true
+  text: |
+    package engine;
+
+    import org.springframework.data.jpa.repository.JpaRepository;
+
+    public interface UserRepository extends JpaRepository<User, Integer> {
+
+        User findByEmail(String email);
+    }
+  learner_created: true
+- name: src/engine/QuizRepository.java
+  visible: true
+  text: |
+    package engine;
+
+    import org.springframework.data.jpa.repository.JpaRepository;
+
+    public interface QuizRepository extends JpaRepository<Quiz, Integer> {}
+  learner_created: true
+- name: src/engine/Answer.java
+  visible: true
+  text: |
+    package engine;
+
+    import java.util.List;
+
+    public class Answer {
+
+        private List<Integer> answer;
+
+        public List<Integer> getAnswer() {
+            return answer;
+        }
+    }
+  learner_created: true
+- name: src/engine/CustomUserDetailsService.java
+  visible: true
+  text: |
+    package engine;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.security.core.userdetails.UserDetails;
+    import org.springframework.security.core.userdetails.UserDetailsService;
+    import org.springframework.security.core.userdetails.UsernameNotFoundException;
+    import org.springframework.stereotype.Service;
+
+    @Service
+    public class CustomUserDetailsService implements UserDetailsService {
+
+        @Autowired
+        private UserRepository userRepository;
+
+        @Override
+        public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+            User user = userRepository.findByEmail(email);
+            if (user == null) {
+                throw new UsernameNotFoundException("User not found.");
+            }
+            return new CustomUserDetails(user);
+        }
+    }
+  learner_created: true
+- name: src/engine/Quiz.java
+  visible: true
+  text: |
+    package engine;
+
+    import com.fasterxml.jackson.annotation.JsonIgnore;
+    import com.fasterxml.jackson.annotation.JsonProperty;
+
+    import javax.persistence.*;
+    import javax.validation.constraints.NotBlank;
+    import javax.validation.constraints.NotNull;
+    import javax.validation.constraints.Size;
+    import java.util.ArrayList;
+    import java.util.List;
+
+    @Entity
+    public class Quiz {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private int id;
+
+        @NotBlank
+        private String title;
+
+        @NotBlank
+        private String text;
+
+        @NotNull
+        @Size(min = 2)
+        @ElementCollection
+        @CollectionTable(name = "quiz_options", joinColumns = @JoinColumn(name = "quiz_id"))
+        private List<@NotNull String> options;
+
+        @ElementCollection
+        @CollectionTable(name = "quiz_answers", joinColumns = @JoinColumn(name = "quiz_id"))
+        private List<Integer> answer = new ArrayList<>();
+
+        @ManyToOne
+        @JoinColumn(name = "user_id", nullable = false)
+        private User user;
+
+        public int getId() {
+            return id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public List<String> getOptions() {
+            return options;
+        }
+
+        // Using @JsonProperty for the setter enables setting it with @RequestBody.
+        // This seems to be necessary because of the @JsonIgnore above the getter.
+        @JsonProperty
+        public void setAnswer(List<Integer> answer) {
+            this.answer = answer;
+        }
+
+        @JsonIgnore  // Avoid revealing the answer to the client.
+        public List<Integer> getAnswer() {
+            return answer;
+        }
+
+        public void setUser(User user) {
+            this.user = user;
+        }
+
+        @JsonIgnore
+        public User getUser() {
+            return user;
+        }
+    }
+  learner_created: true
+- name: src/engine/QuizController.java
+  visible: true
+  text: |
+    package engine;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.MediaType;
+    import org.springframework.validation.annotation.Validated;
+    import org.springframework.web.bind.annotation.*;
+    import org.springframework.web.server.ResponseStatusException;
+
+    import javax.validation.Valid;
+    import javax.validation.constraints.Min;
+    import java.security.Principal;
+    import java.util.*;
+
+    @RestController
+    @Validated
+    @RequestMapping(path = "/api/quizzes")
+    public class QuizController {
+
+        @Autowired
+        private QuizRepository quizRepository;
+
+        @Autowired
+        private UserRepository userRepository;
+
+        @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+        Quiz addQuiz(@RequestBody @Valid Quiz quiz, Principal principal) {
+            User user = userRepository.findByEmail(principal.getName());
+            quiz.setUser(user);
+            return quizRepository.save(quiz);
+        }
+
+        @DeleteMapping(path = "/{id}")
+        @ResponseStatus(HttpStatus.NO_CONTENT)
+        void deleteQuiz(@PathVariable int id, Principal principal) {
+            User user = userRepository.findByEmail(principal.getName());
+            Quiz quiz = quizRepository.findById(id).orElseThrow();
+            if (user.getId() != quiz.getUser().getId()) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
+            quizRepository.delete(quiz);
+        }
+
+        @GetMapping
+        List<Quiz> getAllQuizzes() {
+            return quizRepository.findAll();
+        }
+
+        @GetMapping(path = "/{id}")
+        Quiz getQuiz(@PathVariable @Min(0) int id) {
+            return quizRepository.findById(id).orElseThrow();
+        }
+
+        @PostMapping(path = "/{id}/solve")
+        Response checkAnswer(@PathVariable @Min(0) int id, @RequestBody Answer answer) {
+            Quiz quiz = quizRepository.findById(id).orElseThrow();
+            boolean isCorrect = isAnswerCorrect(quiz.getAnswer(), answer.getAnswer());
+            return Response.get(isCorrect);
+        }
+
+        private boolean isAnswerCorrect(List<Integer> expected, List<Integer> given) {
+            if (expected == null && given == null) {
+                return true;
+            } else if (given == null) {
+                given = new ArrayList<>();
+            } else if (expected == null) {
+                expected = new ArrayList<>();
+            } else if (expected.size() != given.size()) {
+                return false;
+            }
+            Collections.sort(expected);
+            Collections.sort(given);
+            for (int i = 0; i < expected.size(); i++) {
+                if (!expected.get(i).equals(given.get(i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @ExceptionHandler(NoSuchElementException.class)
+        @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Id not found.")
+        void handleWrongIdException() {}
+    }
+  learner_created: true
+- name: src/engine/User.java
+  visible: true
+  text: |
+    package engine;
+
+    import javax.persistence.*;
+    import javax.validation.constraints.NotBlank;
+    import javax.validation.constraints.Pattern;
+    import javax.validation.constraints.Size;
+
+    @Entity
+    public class User {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private int id;
+
+        @NotBlank
+        @Pattern(regexp = "\\w+@\\w+\\.\\w+")
+        @Column(nullable = false, unique = true)
+        private String email;
+
+        @NotBlank
+        @Size(min = 5)
+        private String password;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+  learner_created: true
+- name: src/engine/Response.java
+  visible: true
+  text: |
+    package engine;
+
+    import com.fasterxml.jackson.annotation.JsonFormat;
+
+    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+    public enum Response {
+        // https://www.baeldung.com/jackson-serialize-enums
+
+        CORRECT_ANSWER(true, "Congratulations, you're right!"),
+        WRONG_ANSWER(false, "Wrong answer! Please, try again.");
+
+        private final boolean success;
+        private final String feedback;
+
+        Response(boolean success, String feedback) {
+            this.success = success;
+            this.feedback = feedback;
+        }
+
+        static Response get(boolean answerIsCorrect) {
+            return answerIsCorrect ? CORRECT_ANSWER : WRONG_ANSWER;
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public String getFeedback() {
+            return feedback;
+        }
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/91/stages/509/implement#comment
 status: Unchecked
 record: -1
