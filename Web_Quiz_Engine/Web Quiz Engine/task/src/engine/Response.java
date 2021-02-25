@@ -17,10 +17,6 @@ public enum Response {
         this.feedback = feedback;
     }
 
-    static Response get(boolean answerIsCorrect) {
-        return answerIsCorrect ? CORRECT_ANSWER : WRONG_ANSWER;
-    }
-
     public boolean isSuccess() {
         return success;
     }

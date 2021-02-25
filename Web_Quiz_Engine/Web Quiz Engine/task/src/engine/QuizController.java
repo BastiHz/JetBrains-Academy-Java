@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,6 +26,9 @@ public class QuizController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CompletionRepository completionRepository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     Quiz addQuiz(@RequestBody @Valid Quiz quiz, Principal principal) {
@@ -57,11 +59,27 @@ public class QuizController {
         return quizRepository.findById(id).orElseThrow();
     }
 
+    @GetMapping(path = "/completed")
+    Page<QuizCompletion> getCompletions(
+            @RequestParam(defaultValue = "0") Integer page,
+            Principal principal) {
+        User user = userRepository.findByEmail(principal.getName());
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("completedAt").descending());
+        return completionRepository.findByUser(user, pageable);
+    }
+
     @PostMapping(path = "/{id}/solve")
-    Response checkAnswer(@PathVariable @Min(0) int id, @RequestBody Answer answer) {
+    Response checkAnswer(
+            @PathVariable @Min(0) int id,
+            @RequestBody Answer answer, Principal principal) {
         Quiz quiz = quizRepository.findById(id).orElseThrow();
+        User user = userRepository.findByEmail(principal.getName());
         boolean isCorrect = isAnswerCorrect(quiz.getAnswer(), answer.getAnswer());
-        return Response.get(isCorrect);
+        if (isCorrect) {
+            completionRepository.save(new QuizCompletion(quiz.getId(), user));
+            return Response.CORRECT_ANSWER;
+        }
+        return Response.WRONG_ANSWER;
     }
 
     private boolean isAnswerCorrect(List<Integer> expected, List<Integer> given) {
@@ -76,6 +94,7 @@ public class QuizController {
         }
         Collections.sort(expected);
         Collections.sort(given);
+        // Iterate because expected might be a PersistentBag instead of a List.
         for (int i = 0; i < expected.size(); i++) {
             if (!expected.get(i).equals(given.get(i))) {
                 return false;
