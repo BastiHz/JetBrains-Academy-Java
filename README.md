@@ -25,5 +25,8 @@ This is a little game where the computer tries to guess which animal you are thi
 ### Simple Banking System
 A simple terminal app that lets you open bank accounts and deposit or transfer money. Card numbers are generated with the Luhn algorithm. The data is stored in an SQLite database.
 
-### Web Quiz Engine (in progress)
-A REST service built with Spring Boot. Currently you can only get a question and submit an answer. The functionality will be expanded in later stages, e.g. with the ability to post questions, get all stored questions, and storing the quizzes in a database.
+### Web Quiz Engine
+A REST API built with Spring Boot. It can register and authenticate users. Users can submit quizzes, solve them, and delete them. It is possible to get paginated lists of all stored quizzes and quiz completions per user. The data is stored in a database. There is no user interface so you have to use the terminal or e.g. Postman to interact with the api.
+
+### Code Sharing Platform (in progress)
+In this project I am learning how to combine the backend and frontend by building a platform where users can share code snippets.
