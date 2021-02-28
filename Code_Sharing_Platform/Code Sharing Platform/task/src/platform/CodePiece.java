@@ -1,5 +1,8 @@
 package platform;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class CodePiece {
     private final String code;
     private final String htmlCode;
