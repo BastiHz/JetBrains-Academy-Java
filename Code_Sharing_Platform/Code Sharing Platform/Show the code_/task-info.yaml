@@ -157,6 +157,18 @@ files:
         }
     }
   learner_created: false
+- name: src/platform/ApiController.java
+  visible: true
+  learner_created: true
+- name: src/platform/WebController.java
+  visible: true
+  learner_created: true
+- name: src/platform/CodePiece.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/130/stages/692/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sun, 28 Feb 2021 12:56:58 UTC
 record: -1
