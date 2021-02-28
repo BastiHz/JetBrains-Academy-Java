@@ -2,19 +2,23 @@ package platform;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ApiController {
 
     @Autowired
-    CodePiece codePiece;
+    private CodeSnippetService codeSnippetService;
 
     @GetMapping(path = "/code")
-    private CodePiece getCode() {
-        return codePiece;
+    private CodeSnippet getCode() {
+        return codeSnippetService.getCodeSnippet();
+    }
+
+    @PostMapping(path = "/code/new", consumes = MediaType.APPLICATION_JSON_VALUE)
+    private String updateCode(@RequestBody CodeSnippet newCodeSnippet) {
+        codeSnippetService.setCodeSnippet(newCodeSnippet);
+        return "{}";  // will be filled later
     }
 }

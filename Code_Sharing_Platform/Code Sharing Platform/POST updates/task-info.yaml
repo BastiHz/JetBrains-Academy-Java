@@ -244,6 +244,107 @@ files:
         }
     }
   learner_created: false
+- name: src/platform/ApiController.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.MediaType;
+    import org.springframework.web.bind.annotation.GetMapping;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import org.springframework.web.bind.annotation.RestController;
+
+    @RestController
+    @RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+    public class ApiController {
+
+        @Autowired
+        CodePiece codePiece;
+
+        @GetMapping(path = "/code")
+        private CodePiece getCode() {
+            return codePiece;
+        }
+    }
+  learner_created: true
+- name: src/platform/WebController.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.MediaType;
+    import org.springframework.web.bind.annotation.GetMapping;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import org.springframework.web.bind.annotation.RestController;
+
+    @RestController
+    @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
+    public class WebController {
+
+        @Autowired
+        CodePiece codePiece;
+
+        @GetMapping(path = "/code")
+        private String getCode() {
+            return codePiece.getHtmlCode();
+        }
+    }
+  learner_created: true
+- name: src/platform/ResourceReader.java
+  visible: true
+  learner_created: true
+- name: src/resources/code.html
+  visible: true
+  learner_created: true
+- name: src/platform/CodeSnippetService.java
+  visible: true
+  learner_created: true
+- name: src/platform/CodeSnippet.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.stereotype.Component;
+
+    @Component
+    public class CodePiece {
+        private final String code;
+        private final String htmlCode;
+        private static final String HTML_TEMPLATE = "<html>" +
+            "<head>" +
+            "<title>Code</title>" +
+            "</head>" +
+            "<body>" +
+            "<pre>%s</pre>" +
+            "</body>" +
+            "</html>";
+
+        CodePiece() {
+            code = "public static void main(String[] args) {\n" +
+            "    SpringApplication.run(CodeSharingPlatform.class, args);\n}";
+            htmlCode = String.format(HTML_TEMPLATE, code);
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        String getHtmlCode() {
+            return htmlCode;
+        }
+    }
+  learner_created: true
+- name: src/resources/create.html
+  visible: true
+  learner_created: true
+- name: src/resources/send.js
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/130/stages/693/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sun, 28 Feb 2021 21:13:41 UTC
 record: -1

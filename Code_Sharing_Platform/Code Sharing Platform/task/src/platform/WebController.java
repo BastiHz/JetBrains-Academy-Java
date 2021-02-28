@@ -11,10 +11,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class WebController {
 
     @Autowired
-    CodePiece codePiece;
+    private CodeSnippetService codeSnippetService;
+    private static final String CODE_HTML = ResourceReader.readFileToString("code.html");
+    private static final String CREATE_HTML = ResourceReader.readFileToString("create.html");
 
     @GetMapping(path = "/code")
-    private String getCode() {
-        return codePiece.getHtmlCode();
+    private String getCodeHtml() {
+        CodeSnippet codeSnippet = codeSnippetService.getCodeSnippet();
+        return String.format(
+            CODE_HTML,
+            codeSnippet.getDate(),
+            codeSnippet.getCode()
+        );
+    }
+
+    @GetMapping(path = "/code/new")
+    private String getCreateHtml() {
+        return CREATE_HTML;
     }
 }
