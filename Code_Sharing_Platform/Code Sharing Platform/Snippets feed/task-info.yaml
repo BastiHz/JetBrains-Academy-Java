@@ -477,34 +477,6 @@ files:
         }
     }
   learner_created: true
-- name: src/platform/CodeSnippetService.java
-  visible: true
-  text: |
-    package platform;
-
-    import org.springframework.stereotype.Service;
-
-    @Service
-    public class CodeSnippetService {
-
-        private CodeSnippet codeSnippet;
-
-        public CodeSnippetService() {
-            codeSnippet = new CodeSnippet();
-            codeSnippet.setCode("public static void main(String[] args) {\n" +
-                "    SpringApplication.run(CodeSharingPlatform.class, args);\n}"
-            );
-        }
-
-        public void setCodeSnippet(CodeSnippet codeSnippet) {
-            this.codeSnippet = codeSnippet;
-        }
-
-        public CodeSnippet getCodeSnippet() {
-            return codeSnippet;
-        }
-    }
-  learner_created: true
 - name: src/platform/Code.java
   visible: true
   text: |
@@ -533,9 +505,6 @@ files:
         }
     }
   learner_created: true
-- name: src/platform/ResourceReader.java
-  visible: true
-  learner_created: true
 - name: src/resources/static/js/submit_button.js
   visible: true
   learner_created: true
@@ -545,12 +514,43 @@ files:
 - name: src/resources/templates/code_new.ftlh
   visible: true
   learner_created: true
-- name: src/resources/templates/code.ftlh
-  visible: true
-  learner_created: true
 - name: src/resources/static/css/code_style.css
   visible: true
   learner_created: true
+- name: src/platform/CodeService.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.stereotype.Service;
+
+    @Service
+    public class CodeSnippetService {
+
+        private CodeSnippet codeSnippet;
+
+        public CodeSnippetService() {
+            codeSnippet = new CodeSnippet();
+            codeSnippet.setCode("public static void main(String[] args) {\n" +
+                "    SpringApplication.run(CodeSharingPlatform.class, args);\n}"
+            );
+        }
+
+        public void setCodeSnippet(CodeSnippet codeSnippet) {
+            this.codeSnippet = codeSnippet;
+        }
+
+        public CodeSnippet getCodeSnippet() {
+            return codeSnippet;
+        }
+    }
+  learner_created: true
+- name: src/resources/templates/code_latest.ftlh
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/130/stages/694/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Wed, 03 Mar 2021 20:25:19 UTC
 record: -1

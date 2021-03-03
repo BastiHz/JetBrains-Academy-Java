@@ -1,11 +1,14 @@
 #load_date {
     color: green;
     font-family: monospace;
+    font-size: large;
+    padding-left: 10px;
 }
 #code_snippet {
+    margin-top: 5px;
     background-color: #f0f0f0;
-    border-top: 1px solid grey;
-    border-bottom: 1px solid grey;
+    border: 1px solid grey;
     padding: 10px;
-    font-size: large
+    font-size: large;
+    width: min-content;
 }
