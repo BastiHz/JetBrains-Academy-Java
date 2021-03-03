@@ -533,89 +533,22 @@ files:
         }
     }
   learner_created: true
-- name: src/resources/templates/NewCodePage.html
-  visible: true
-  text: |
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Create</title>
-        <style>
-            textarea {
-                font-size: large;
-            }
-        </style>
-        <script>
-            function send() {
-                let object = {
-                    "code": document.getElementById("code_snippet").value
-                };
-
-                let json = JSON.stringify(object);
-
-                let xhr = new XMLHttpRequest();
-                xhr.open("POST", '/api/code/new', false)
-                xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-                xhr.send(json);
-
-                if (xhr.status == 200) {
-                  alert("Success!");
-                }
-            }
-        </script>
-    </head>
-    <body>
-        <textarea id="code_snippet" rows="10" cols="120" placeholder="write your code here"></textarea>
-        <br><br>
-        <button id="send_snippet" onclick="send()">Submit</button>
-    </body>
-    </html>
-  learner_created: true
-- name: src/resources/templates/CodePage.html
-  visible: true
-  text: |
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Code</title>
-        <style>
-            #load_date {
-                color: green;
-                font-family: monospace;
-            }
-            #code_snippet {
-                background-color: #f0f0f0;
-                border-top: 1px solid grey;
-                border-bottom: 1px solid grey;
-                padding: 10px;
-                font-size: large
-            }
-        </style>
-    </head>
-    <body>
-        <p><span id="load_date">%s</span></p>
-        <pre id="code_snippet">%s</pre>
-    </body>
-    </html>
-  learner_created: true
-- name: src/resources/static/css/NewCodePageStyle.css
-  visible: true
-  learner_created: true
-- name: src/resources/static/css/CodePageStyle.css
-  visible: true
-  learner_created: true
-- name: src/resources/static/js/sendbutton.js
-  visible: true
-  learner_created: true
 - name: src/platform/ResourceReader.java
   visible: true
   learner_created: true
-- name: src/resources/create.html
+- name: src/resources/static/js/submit_button.js
   visible: true
   learner_created: true
-- name: src/resources/code.html
+- name: src/resources/static/css/code_new_style.css
+  visible: true
+  learner_created: true
+- name: src/resources/templates/code_new.ftlh
+  visible: true
+  learner_created: true
+- name: src/resources/templates/code.ftlh
+  visible: true
+  learner_created: true
+- name: src/resources/static/css/code_style.css
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/projects/130/stages/694/implement#comment

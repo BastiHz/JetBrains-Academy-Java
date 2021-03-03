@@ -1,0 +1,11 @@
+#load_date {
+    color: green;
+    font-family: monospace;
+}
+#code_snippet {
+    background-color: #f0f0f0;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+    padding: 10px;
+    font-size: large
+}
