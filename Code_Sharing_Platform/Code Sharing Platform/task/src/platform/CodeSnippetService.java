@@ -5,20 +5,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class CodeSnippetService {
 
-    private CodeSnippet codeSnippet;
+    private Code code;
 
     public CodeSnippetService() {
-        codeSnippet = new CodeSnippet();
-        codeSnippet.setCode("public static void main(String[] args) {\n" +
+        code = new Code();
+        code.setCode("public static void main(String[] args) {\n" +
             "    SpringApplication.run(CodeSharingPlatform.class, args);\n}"
         );
     }
 
-    public void setCodeSnippet(CodeSnippet codeSnippet) {
-        this.codeSnippet = codeSnippet;
+    public void setCodeSnippet(Code code) {
+        this.code = code;
     }
 
-    public CodeSnippet getCodeSnippet() {
-        return codeSnippet;
+    public Code getCodeSnippet() {
+        return code;
     }
 }

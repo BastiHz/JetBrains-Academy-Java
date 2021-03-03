@@ -413,6 +413,211 @@ files:
         }
     }
   learner_created: false
+- name: src/platform/ApiController.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.MediaType;
+    import org.springframework.web.bind.annotation.*;
+
+    @RestController
+    @RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+    public class ApiController {
+
+        @Autowired
+        private CodeSnippetService codeSnippetService;
+
+        @GetMapping(path = "/code")
+        private CodeSnippet getCode() {
+            return codeSnippetService.getCodeSnippet();
+        }
+
+        @PostMapping(path = "/code/new", consumes = MediaType.APPLICATION_JSON_VALUE)
+        private String updateCode(@RequestBody CodeSnippet newCodeSnippet) {
+            codeSnippetService.setCodeSnippet(newCodeSnippet);
+            return "{}";  // will be filled later
+        }
+    }
+  learner_created: true
+- name: src/platform/WebController.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.MediaType;
+    import org.springframework.web.bind.annotation.GetMapping;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import org.springframework.web.bind.annotation.RestController;
+
+    @RestController
+    @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
+    public class WebController {
+
+        @Autowired
+        private CodeSnippetService codeSnippetService;
+        private static final String CODE_HTML = ResourceReader.readFileToString("code.html");
+        private static final String CREATE_HTML = ResourceReader.readFileToString("create.html");
+
+        @GetMapping(path = "/code")
+        private String getCodeHtml() {
+            CodeSnippet codeSnippet = codeSnippetService.getCodeSnippet();
+            return String.format(
+                CODE_HTML,
+                codeSnippet.getDate(),
+                codeSnippet.getCode()
+            );
+        }
+
+        @GetMapping(path = "/code/new")
+        private String getCreateHtml() {
+            return CREATE_HTML;
+        }
+    }
+  learner_created: true
+- name: src/platform/CodeSnippetService.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.stereotype.Service;
+
+    @Service
+    public class CodeSnippetService {
+
+        private CodeSnippet codeSnippet;
+
+        public CodeSnippetService() {
+            codeSnippet = new CodeSnippet();
+            codeSnippet.setCode("public static void main(String[] args) {\n" +
+                "    SpringApplication.run(CodeSharingPlatform.class, args);\n}"
+            );
+        }
+
+        public void setCodeSnippet(CodeSnippet codeSnippet) {
+            this.codeSnippet = codeSnippet;
+        }
+
+        public CodeSnippet getCodeSnippet() {
+            return codeSnippet;
+        }
+    }
+  learner_created: true
+- name: src/platform/Code.java
+  visible: true
+  text: |
+    package platform;
+
+    import java.time.LocalDateTime;
+    import java.time.format.DateTimeFormatter;
+
+    public class CodeSnippet {
+        private String code;
+        private String date;
+        private static final DateTimeFormatter dateTimeFormatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        public void setCode(String code) {
+            this.code = code;
+            date = LocalDateTime.now().format(dateTimeFormatter);
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public String getDate() {
+            return date;
+        }
+    }
+  learner_created: true
+- name: src/resources/templates/NewCodePage.html
+  visible: true
+  text: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Create</title>
+        <style>
+            textarea {
+                font-size: large;
+            }
+        </style>
+        <script>
+            function send() {
+                let object = {
+                    "code": document.getElementById("code_snippet").value
+                };
+
+                let json = JSON.stringify(object);
+
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", '/api/code/new', false)
+                xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+                xhr.send(json);
+
+                if (xhr.status == 200) {
+                  alert("Success!");
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <textarea id="code_snippet" rows="10" cols="120" placeholder="write your code here"></textarea>
+        <br><br>
+        <button id="send_snippet" onclick="send()">Submit</button>
+    </body>
+    </html>
+  learner_created: true
+- name: src/resources/templates/CodePage.html
+  visible: true
+  text: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Code</title>
+        <style>
+            #load_date {
+                color: green;
+                font-family: monospace;
+            }
+            #code_snippet {
+                background-color: #f0f0f0;
+                border-top: 1px solid grey;
+                border-bottom: 1px solid grey;
+                padding: 10px;
+                font-size: large
+            }
+        </style>
+    </head>
+    <body>
+        <p><span id="load_date">%s</span></p>
+        <pre id="code_snippet">%s</pre>
+    </body>
+    </html>
+  learner_created: true
+- name: src/resources/static/css/NewCodePageStyle.css
+  visible: true
+  learner_created: true
+- name: src/resources/static/css/CodePageStyle.css
+  visible: true
+  learner_created: true
+- name: src/resources/static/js/sendbutton.js
+  visible: true
+  learner_created: true
+- name: src/platform/ResourceReader.java
+  visible: true
+  learner_created: true
+- name: src/resources/create.html
+  visible: true
+  learner_created: true
+- name: src/resources/code.html
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/130/stages/694/implement#comment
 status: Unchecked
 record: -1

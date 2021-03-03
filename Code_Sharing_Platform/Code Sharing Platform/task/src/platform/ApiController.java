@@ -12,13 +12,13 @@ public class ApiController {
     private CodeSnippetService codeSnippetService;
 
     @GetMapping(path = "/code")
-    private CodeSnippet getCode() {
+    private Code getCode() {
         return codeSnippetService.getCodeSnippet();
     }
 
     @PostMapping(path = "/code/new", consumes = MediaType.APPLICATION_JSON_VALUE)
-    private String updateCode(@RequestBody CodeSnippet newCodeSnippet) {
-        codeSnippetService.setCodeSnippet(newCodeSnippet);
-        return "{}";  // will be filled later
+    private String updateCode(@RequestBody Code newCode) {
+        codeSnippetService.setCodeSnippet(newCode);
+        return "{}";
     }
 }

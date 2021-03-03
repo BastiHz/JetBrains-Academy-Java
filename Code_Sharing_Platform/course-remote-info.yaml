@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/405256/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Sun, 28 Feb 2021 17:44:27 UTC
+update_date: Wed, 03 Mar 2021 10:31:26 UTC
 stages:
 - id: 692
   step: 11027
@@ -22,6 +22,8 @@ stages:
   is_completed: false
 topics:
   0:
+  - title: Introduction to Scala
+    theory_id: 8945
   - title: Immutability
     theory_id: 7929
   - title: Units of information
@@ -64,24 +66,10 @@ topics:
     theory_id: 6491
   - title: Introduction to Spring boot
     theory_id: 7944
-  - title: Write, compile, and run
-    theory_id: 3739
-  - title: JVM, JRE, and JDK
-    theory_id: 3499
   - title: Getting started with Spring Boot
     theory_id: 6336
   - title: Basic project structure
     theory_id: 6339
-  - title: What is an exception
-    theory_id: 3497
-  - title: NPE
-    theory_id: 1945
-  - title: Generic programming
-    theory_id: 3492
-  - title: What are collections
-    theory_id: 3770
-  - title: ArrayList
-    theory_id: 3567
   - title: Rest controller
     theory_id: 7015
   - title: Introduction to OOP
@@ -130,6 +118,8 @@ topics:
     theory_id: 3507
   - title: Switch statement
     theory_id: 3504
+  - title: Introduction to Kotlin
+    theory_id: 4350
   - title: Frameworks
     theory_id: 6701
   - title: JSON
@@ -152,24 +142,24 @@ topics:
     theory_id: 3511
   - title: Iterating over arrays
     theory_id: 3602
+  - title: Arrays as parameters
+    theory_id: 3594
   - title: String
     theory_id: 3523
   - title: IntelliJ IDEA
     theory_id: 3801
   - title: IDEA Basics
     theory_id: 5819
+  - title: Write, compile, and run
+    theory_id: 3739
+  - title: JVM, JRE, and JDK
+    theory_id: 3499
   - title: Errors in programs
     theory_id: 3536
-  - title: Defining classes
-    theory_id: 3618
-  - title: Constructor
-    theory_id: 3535
-  - title: Objects
-    theory_id: 4727
-  - title: Instance methods
-    theory_id: 3495
-  - title: Annotations
-    theory_id: 3622
+  - title: What is an exception
+    theory_id: 3497
+  - title: NPE
+    theory_id: 1945
   - title: Build tools
     theory_id: 4284
   - title: Java Archive
@@ -182,6 +172,22 @@ topics:
     theory_id: 7917
   - title: Dependency management
     theory_id: 5076
+  - title: Introduction to generic programming
+    theory_id: 3492
+  - title: What are collections
+    theory_id: 3770
+  - title: ArrayList
+    theory_id: 3567
+  - title: Defining classes
+    theory_id: 3618
+  - title: Constructor
+    theory_id: 3535
+  - title: Instance methods
+    theory_id: 3495
+  - title: Annotations basics
+    theory_id: 3622
+  - title: Objects
+    theory_id: 4727
   - title: Boxing and unboxing
     theory_id: 3595
   1:
@@ -263,32 +269,6 @@ topics:
     theory_id: 7427
   - title: Object-Relational Mapping (ORM)
     theory_id: 8312
-  - title: Package
-    theory_id: 3621
-  - title: Access modifiers
-    theory_id: 3589
-  - title: Getters and setters
-    theory_id: 3599
-  - title: Static members
-    theory_id: 3534
-  - title: Multiple constructors
-    theory_id: 3538
-  - title: Inheritance
-    theory_id: 3583
-  - title: The keyword super
-    theory_id: 3588
-  - title: Hiding and overriding
-    theory_id: 3572
-  - title: Protected modifier
-    theory_id: 6692
-  - title: Referencing subclass objects
-    theory_id: 3585
-  - title: Polymorphism
-    theory_id: 3587
-  - title: Interface
-    theory_id: 3615
-  - title: Default methods
-    theory_id: 11354
   - title: Lambda expressions
     theory_id: 11635
   - title: Method references
@@ -299,5 +279,31 @@ topics:
     theory_id: 3623
   - title: Optional
     theory_id: 9699
+  - title: Multiple constructors
+    theory_id: 3538
+  - title: Package
+    theory_id: 3621
+  - title: Access modifiers
+    theory_id: 3589
+  - title: Getters and setters
+    theory_id: 3599
+  - title: Inheritance
+    theory_id: 3583
+  - title: The keyword super
+    theory_id: 3588
+  - title: Protected modifier
+    theory_id: 6692
+  - title: Referencing subclass objects
+    theory_id: 3585
+  - title: Static members
+    theory_id: 3534
+  - title: Hiding and overriding
+    theory_id: 3572
+  - title: Polymorphism
+    theory_id: 3587
+  - title: Interface
+    theory_id: 3615
+  - title: Default methods
+    theory_id: 11354
   - title: Anonymous classes
     theory_id: 11896
