@@ -631,6 +631,315 @@ files:
         }
     }
   learner_created: false
+- name: src/resources/static/css/code_new_style.css
+  visible: true
+  text: |-
+    #input_and_submit {
+        margin-top: 30px;
+        margin-left: 20px;
+    }
+
+    #code_snippet {
+        font-size: large;
+        padding: 5px;
+        border: 1px solid #105fb3;
+    }
+
+    #send_snippet {
+        margin-top: 15px;
+    }
+  learner_created: true
+- name: src/platform/CodeRepository.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.data.jpa.repository.JpaRepository;
+    import org.springframework.stereotype.Repository;
+
+    import java.util.List;
+
+    @Repository
+    public interface CodeRepository extends JpaRepository<Code, Integer> {
+
+        List<Code> findTop10ByOrderByIdDesc();
+    }
+  learner_created: true
+- name: src/platform/ApiController.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.MediaType;
+    import org.springframework.web.bind.annotation.*;
+
+    import java.util.List;
+    import java.util.Map;
+
+    @RestController
+    @RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+    public class ApiController {
+
+        @Autowired
+        private CodeService codeService;
+
+        @GetMapping(path = "/code/{id}")
+        public Code getCodeById(@PathVariable int id) {
+            return codeService.getCodeById(id);
+        }
+
+        @GetMapping(path = "/code/latest")
+        public List<Code> getLatestCode() {
+            return codeService.getLatestCodes();
+        }
+
+        @PostMapping(path = "/code/new", consumes = MediaType.APPLICATION_JSON_VALUE)
+        public Map<String, String> addCode(@RequestBody Code newCode) {
+            int id = codeService.addCode(newCode);
+            // return id as String because the exercise requires it
+            return Map.of("id", String.valueOf(id));
+        }
+    }
+  learner_created: true
+- name: src/platform/CodeService.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.stereotype.Service;
+
+    import java.util.List;
+
+    @Service
+    public class CodeService {
+
+        @Autowired
+        private CodeRepository codeRepository;
+
+        public int addCode(Code code) {
+            codeRepository.save(code);
+            return code.getId();
+        }
+
+        public Code getCodeById(int id) {
+            return codeRepository.findById(id).orElseThrow();
+        }
+
+        public List<Code> getLatestCodes() {
+            return codeRepository.findTop10ByOrderByIdDesc();
+        }
+    }
+  learner_created: true
+- name: src/resources/templates/code_new.ftlh
+  visible: true
+  text: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Create</title>
+        <link rel="stylesheet" href="/css/code_new_style.css">
+        <script src="/js/submit_button.js"></script>
+        <link rel="stylesheet"
+              href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
+        <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+    </head>
+    <body>
+        <div id="input_and_submit">
+            <textarea id="code_snippet" rows="25" cols="100" autofocus placeholder="write your code here"></textarea>
+            <br>
+            <button id="send_snippet" onclick="send()">Submit</button>
+        </div>
+    </body>
+    </html>
+  learner_created: true
+- name: src/resources/static/css/code_style.css
+  visible: true
+  text: |
+    #date_and_code {
+        margin-top: 30px;
+        margin-left: 20px;
+    }
+
+    #load_date {
+        color: #1c6b0c;
+        font-family: monospace;
+        font-size: large;
+        margin-left: 10px;
+    }
+
+    #code_snippet {
+        margin-top: 5px;
+        background-color: #f0f0f0;
+        border: 1px solid #105fb3;
+        padding: 10px;
+        font-size: large;
+        width: min-content;
+    }
+  learner_created: true
+- name: src/resources/templates/code_latest.ftlh
+  visible: true
+  text: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Latest</title>
+        <link rel="stylesheet" href="/css/code_style.css">
+        <link rel="stylesheet"
+              href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
+        <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+    </head>
+    <body>
+        <div id="date_and_code">
+        <#list codes as code>
+            <span id="load_date">${code.date}</span>
+            <pre id="code_snippet"><code>${code.code}</code></pre>
+        </#list>
+        </div>
+    </body>
+    </html>
+  learner_created: true
+- name: src/platform/GlobalControllerExceptionHandler.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.http.HttpStatus;
+    import org.springframework.web.bind.annotation.ControllerAdvice;
+    import org.springframework.web.bind.annotation.ExceptionHandler;
+    import org.springframework.web.bind.annotation.ResponseStatus;
+
+    import java.util.NoSuchElementException;
+
+    @ControllerAdvice
+    public class GlobalControllerExceptionHandler {
+
+        @ExceptionHandler(NoSuchElementException.class)
+        @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Id not found.")
+        void handleWrongIdException() {}
+    }
+  learner_created: true
+- name: src/platform/WebController.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.MediaType;
+    import org.springframework.stereotype.Controller;
+    import org.springframework.web.bind.annotation.*;
+    import org.springframework.web.servlet.ModelAndView;
+
+    import java.util.List;
+
+    @Controller  // needs to be @Controller not @RestController or else templates won't load
+    @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
+    public class WebController {
+
+        @Autowired
+        private CodeService codeService;
+
+        @GetMapping(path = "/code/{id}")
+        public ModelAndView getCodeById(@PathVariable int id) {
+            ModelAndView mav = new ModelAndView("code");
+            Code code = codeService.getCodeById(id);
+            mav.addObject("code", code);
+            return mav;
+        }
+
+        @GetMapping(path = "/code/latest")
+        public ModelAndView getLatestCodes() {
+            ModelAndView mav = new ModelAndView("code_latest");
+            List<Code> latestCodes = codeService.getLatestCodes();
+            mav.addObject("codes", latestCodes);
+            return mav;
+        }
+
+        @GetMapping(path = "/code/new")
+        public String getCodeNew() {
+            return "code_new";
+        }
+    }
+  learner_created: true
+- name: src/platform/Code.java
+  visible: true
+  text: |
+    package platform;
+
+    import com.fasterxml.jackson.annotation.JsonIgnore;
+    import org.hibernate.annotations.Type;
+
+    import javax.persistence.Entity;
+    import javax.persistence.GeneratedValue;
+    import javax.persistence.GenerationType;
+    import javax.persistence.Id;
+    import java.time.LocalDateTime;
+    import java.time.format.DateTimeFormatter;
+
+    @Entity
+    public class Code {
+
+        private static final DateTimeFormatter dateTimeFormatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private int id;
+        @Type(type = "text")  // otherwise the column is varchar(255) which is too small
+        private String code;
+        // The exercise tests require the date to be the same on the website
+        // and in the json for the api. That's why I simply use a String
+        // instead of LocalDateTime to store the date.
+        // FIXME: In the next stage I need the date for sorting. To do this it needs sub-second
+        //  accuracy, which is why I will store it as a LocalDateTime again.
+        // For the web view there will be a formattedDate field. And the api/code endpoints will
+        // receive a json with code and formattedDate named as date, for consistency.
+        private String date;
+
+        @JsonIgnore
+        public int getId() {
+            return id;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+            date = LocalDateTime.now().format(dateTimeFormatter);
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public String getDate() {
+            return date;
+        }
+    }
+  learner_created: true
+- name: src/resources/static/js/submit_button.js
+  visible: true
+  text: |
+    function send() {
+        let object = {
+            "code": document.getElementById("code_snippet").value
+        };
+
+        let json = JSON.stringify(object);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", '/api/code/new', false)
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.send(json);
+
+        if (xhr.status == 200) {
+          alert("Success!");
+        }
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/130/stages/696/implement#comment
 status: Unchecked
 record: -1

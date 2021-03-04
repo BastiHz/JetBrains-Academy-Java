@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/287312/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Thu, 25 Feb 2021 08:57:19 UTC
+update_date: Thu, 04 Mar 2021 20:06:17 UTC
 stages:
 - id: 504
   step: 8252
@@ -25,6 +25,8 @@ stages:
   is_completed: true
 topics:
   0:
+  - title: Introduction to Scala
+    theory_id: 8945
   - title: Immutability
     theory_id: 7929
   - title: Units of information
@@ -63,24 +65,10 @@ topics:
     theory_id: 7944
   - title: Postman
     theory_id: 8512
-  - title: Write, compile, and run
-    theory_id: 3739
-  - title: JVM, JRE, and JDK
-    theory_id: 3499
   - title: Getting started with Spring Boot
     theory_id: 6336
   - title: Basic project structure
     theory_id: 6339
-  - title: What is an exception
-    theory_id: 3497
-  - title: NPE
-    theory_id: 1945
-  - title: Generic programming
-    theory_id: 3492
-  - title: What are collections
-    theory_id: 3770
-  - title: ArrayList
-    theory_id: 3567
   - title: Rest controller
     theory_id: 7015
   - title: Introduction to OOP
@@ -99,6 +87,8 @@ topics:
     theory_id: 3518
   - title: Comments
     theory_id: 3520
+  - title: Coding style conventions
+    theory_id: 12411
   - title: Naming variables
     theory_id: 3513
   - title: Scanning the input
@@ -127,6 +117,8 @@ topics:
     theory_id: 3507
   - title: Switch statement
     theory_id: 3504
+  - title: Introduction to Kotlin
+    theory_id: 4350
   - title: Frameworks
     theory_id: 6701
   - title: JSON
@@ -151,40 +143,24 @@ topics:
     theory_id: 3511
   - title: Iterating over arrays
     theory_id: 3602
+  - title: Arrays as parameters
+    theory_id: 3594
   - title: String
     theory_id: 3523
   - title: Final variables
     theory_id: 7427
   - title: IntelliJ IDEA
     theory_id: 3801
+  - title: Write, compile, and run
+    theory_id: 3739
+  - title: JVM, JRE, and JDK
+    theory_id: 3499
   - title: Errors in programs
     theory_id: 3536
-  - title: Defining classes
-    theory_id: 3618
-  - title: Package
-    theory_id: 3621
-  - title: Constructor
-    theory_id: 3535
-  - title: Objects
-    theory_id: 4727
-  - title: Instance methods
-    theory_id: 3495
-  - title: Access modifiers
-    theory_id: 3589
-  - title: Getters and setters
-    theory_id: 3599
-  - title: Static members
-    theory_id: 3534
-  - title: Annotations
-    theory_id: 3622
-  - title: Multiple constructors
-    theory_id: 3538
-  - title: Inheritance
-    theory_id: 3583
-  - title: The keyword super
-    theory_id: 3588
-  - title: Hiding and overriding
-    theory_id: 3572
+  - title: What is an exception
+    theory_id: 3497
+  - title: NPE
+    theory_id: 1945
   - title: Build tools
     theory_id: 4284
   - title: Java Archive
@@ -197,6 +173,38 @@ topics:
     theory_id: 7917
   - title: Dependency management
     theory_id: 5076
+  - title: Introduction to generic programming
+    theory_id: 3492
+  - title: What are collections
+    theory_id: 3770
+  - title: ArrayList
+    theory_id: 3567
+  - title: Defining classes
+    theory_id: 3618
+  - title: Constructor
+    theory_id: 3535
+  - title: Instance methods
+    theory_id: 3495
+  - title: Multiple constructors
+    theory_id: 3538
+  - title: Package
+    theory_id: 3621
+  - title: Access modifiers
+    theory_id: 3589
+  - title: Getters and setters
+    theory_id: 3599
+  - title: Inheritance
+    theory_id: 3583
+  - title: The keyword super
+    theory_id: 3588
+  - title: Annotations basics
+    theory_id: 3622
+  - title: Objects
+    theory_id: 4727
+  - title: Static members
+    theory_id: 3534
+  - title: Hiding and overriding
+    theory_id: 3572
   - title: Boxing and unboxing
     theory_id: 3595
   1:
@@ -204,6 +212,10 @@ topics:
     theory_id: 9831
   - title: Hash table
     theory_id: 5364
+  - title: Passing JSON to server
+    theory_id: 7165
+  - title: Beans and components
+    theory_id: 7353
   - title: Hierarchy of exceptions
     theory_id: 3570
   - title: Exception handling
@@ -212,25 +224,29 @@ topics:
     theory_id: 3493
   - title: The Collections Framework overview
     theory_id: 3624
-  - title: Set
+  - title: The List interface
+    theory_id: 3581
+  - title: The Set interface
     theory_id: 3575
-  - title: Map
+  - title: The Map interface
     theory_id: 3558
-  - title: Passing JSON to server
-    theory_id: 7165
-  - title: Beans and components
-    theory_id: 7353
   - title: Protected modifier
     theory_id: 6692
   - title: Referencing subclass objects
     theory_id: 3585
-  - title: Polymorphism
-    theory_id: 3587
   - title: The Object class
     theory_id: 3596
+  - title: Polymorphism
+    theory_id: 3587
   - title: Interface
     theory_id: 3615
   2:
+  - title: Exception handling
+    theory_id: 8780
+  - title: Bean Validation
+    theory_id: 9355
+  - title: Regexps basics
+    theory_id: 7580
   - title: Regexps in Java
     theory_id: 3670
   - title: Sets, ranges, alternations
@@ -241,12 +257,6 @@ topics:
     theory_id: 3687
   - title: Regexes in programs
     theory_id: 3696
-  - title: Exception handling
-    theory_id: 8780
-  - title: Bean Validation
-    theory_id: 9355
-  - title: Regexps basics
-    theory_id: 7580
   3:
   - title: Files
     theory_id: 6989
@@ -265,13 +275,13 @@ topics:
   - title: Object-Relational Mapping (ORM)
     theory_id: 8312
   5:
-  - title: Default methods
-    theory_id: 11354
   - title: Lambda expressions
     theory_id: 11635
   - title: Method references
     theory_id: 3620
   - title: Functional interfaces
     theory_id: 11636
+  - title: Default methods
+    theory_id: 11354
   - title: Anonymous classes
     theory_id: 11896

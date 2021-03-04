@@ -1,13 +1,19 @@
+#date_and_code {
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
 #load_date {
-    color: green;
+    color: #1c6b0c;
     font-family: monospace;
     font-size: large;
-    padding-left: 10px;
+    margin-left: 10px;
 }
+
 #code_snippet {
     margin-top: 5px;
     background-color: #f0f0f0;
-    border: 1px solid grey;
+    border: 1px solid #105fb3;
     padding: 10px;
     font-size: large;
     width: min-content;

@@ -1,3 +1,14 @@
-textarea {
+#input_and_submit {
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+#code_snippet {
     font-size: large;
+    padding: 5px;
+    border: 1px solid #105fb3;
+}
+
+#send_snippet {
+    margin-top: 15px;
 }

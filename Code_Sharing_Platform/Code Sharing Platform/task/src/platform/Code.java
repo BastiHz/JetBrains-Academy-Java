@@ -1,5 +1,6 @@
 package platform;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
@@ -23,8 +24,14 @@ public class Code {
     // The exercise tests require the date to be the same on the website
     // and in the json for the api. That's why I simply use a String
     // instead of LocalDateTime to store the date.
+    // FIXME: In the next stage I need the date for sorting. To do this it needs sub-second
+    //  accuracy, which is why I will store it as a LocalDateTime again.
+    // Idea: Use String date for the formatted date and LocalDateTime rawDate for the real date.
+    // And annotate the rawDate with JsonIgnore. This way it should be saved in the database
+    // but not returned in requests. Or see how it was done with that one field in Quiz.
     private String date;
 
+    @JsonIgnore
     public int getId() {
         return id;
     }
