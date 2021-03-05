@@ -28,5 +28,5 @@ A simple terminal app that lets you open bank accounts and deposit or transfer m
 ### Web Quiz Engine
 A REST API built with Spring Boot. It can register and authenticate users. Users can submit quizzes, solve them, and delete them. It is possible to get paginated lists of all stored quizzes and quiz completions per user. The data is stored in a database. There is no user interface so you have to use the terminal or e.g. Postman to interact with the api.
 
-### Code Sharing Platform (in progress)
+### Code Sharing Platform
 In this project I am using Spring Boot to learn how to combine the backend and frontend by building a platform where users can share code snippets. You can access it in the browser to create new code snippets, see the latest codes and access specific codes by uuid. Codes are optionally access restricted by number of views or with a time limit.
