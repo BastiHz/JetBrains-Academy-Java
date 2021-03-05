@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class CodeService {
@@ -11,16 +12,22 @@ public class CodeService {
     @Autowired
     private CodeRepository codeRepository;
 
-    public int addCode(Code code) {
+    public String addCode(Code code) {
         codeRepository.save(code);
         return code.getId();
     }
 
-    public Code getCodeById(int id) {
-        return codeRepository.findById(id).orElseThrow();
+    public Code getCodeById(String id) {
+        Code code = codeRepository.findById(id).orElseThrow();
+        if (code.isInaccessible()) {
+            throw new NoSuchElementException();
+        }
+        code.updateViews();
+        codeRepository.save(code);  // update with new number of views left
+        return code;
     }
 
     public List<Code> getLatestCodes() {
-        return codeRepository.findTop10ByOrderByIdDesc();
+        return codeRepository.findTop10ByViewRestrictedFalseAndTimeRestrictedFalseOrderByDateDesc();
     }
 }

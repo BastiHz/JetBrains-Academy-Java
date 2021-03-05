@@ -1,6 +1,8 @@
 function send() {
     let object = {
-        "code": document.getElementById("code_snippet").value
+        "code": document.getElementById("code_snippet").value,
+        "time": parseInt(document.getElementById("time_restriction").value),
+        "views": parseInt(document.getElementById("views_restriction").value),
     };
 
     let json = JSON.stringify(object);
@@ -11,6 +13,7 @@ function send() {
     xhr.send(json);
 
     if (xhr.status == 200) {
-      alert("Success!");
+        const id = JSON.parse(xhr.response).id;
+        alert("Success!\n\nYour code is accessible via this id:\n" + id);
     }
 }

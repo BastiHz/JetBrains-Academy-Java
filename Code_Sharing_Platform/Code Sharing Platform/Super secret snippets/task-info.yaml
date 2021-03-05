@@ -631,24 +631,6 @@ files:
         }
     }
   learner_created: false
-- name: src/resources/static/css/code_new_style.css
-  visible: true
-  text: |-
-    #input_and_submit {
-        margin-top: 30px;
-        margin-left: 20px;
-    }
-
-    #code_snippet {
-        font-size: large;
-        padding: 5px;
-        border: 1px solid #105fb3;
-    }
-
-    #send_snippet {
-        margin-top: 15px;
-    }
-  learner_created: true
 - name: src/platform/CodeRepository.java
   visible: true
   text: |
@@ -732,30 +714,6 @@ files:
         }
     }
   learner_created: true
-- name: src/resources/templates/code_new.ftlh
-  visible: true
-  text: |
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Create</title>
-        <link rel="stylesheet" href="/css/code_new_style.css">
-        <script src="/js/submit_button.js"></script>
-        <link rel="stylesheet"
-              href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
-        <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
-    </head>
-    <body>
-        <div id="input_and_submit">
-            <textarea id="code_snippet" rows="25" cols="100" autofocus placeholder="write your code here"></textarea>
-            <br>
-            <button id="send_snippet" onclick="send()">Submit</button>
-        </div>
-    </body>
-    </html>
-  learner_created: true
 - name: src/resources/static/css/code_style.css
   visible: true
   text: |
@@ -779,30 +737,6 @@ files:
         font-size: large;
         width: min-content;
     }
-  learner_created: true
-- name: src/resources/templates/code_latest.ftlh
-  visible: true
-  text: |
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Latest</title>
-        <link rel="stylesheet" href="/css/code_style.css">
-        <link rel="stylesheet"
-              href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
-        <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script>
-    </head>
-    <body>
-        <div id="date_and_code">
-        <#list codes as code>
-            <span id="load_date">${code.date}</span>
-            <pre id="code_snippet"><code>${code.code}</code></pre>
-        </#list>
-        </div>
-    </body>
-    </html>
   learner_created: true
 - name: src/platform/GlobalControllerExceptionHandler.java
   visible: true
@@ -940,6 +874,75 @@ files:
         }
     }
   learner_created: true
+- name: src/resources/templates/create.ftlh
+  visible: true
+  text: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Create</title>
+        <link rel="stylesheet" href="/css/code_new_style.css">
+        <script src="/js/submit_button.js"></script>
+        <link rel="stylesheet"
+              href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
+        <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+    </head>
+    <body>
+        <div id="input_and_submit">
+            <textarea id="code_snippet" rows="25" cols="100" autofocus placeholder="write your code here"></textarea>
+            <br>
+            <button id="send_snippet" onclick="send()">Submit</button>
+        </div>
+    </body>
+    </html>
+  learner_created: true
+- name: src/resources/templates/latest.ftlh
+  visible: true
+  text: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Latest</title>
+        <link rel="stylesheet" href="/css/code_style.css">
+        <link rel="stylesheet"
+              href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
+        <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+    </head>
+    <body>
+        <div id="date_and_code">
+        <#list codes as code>
+            <span id="load_date">${code.date}</span>
+            <pre id="code_snippet"><code>${code.code}</code></pre>
+        </#list>
+        </div>
+    </body>
+    </html>
+  learner_created: true
+- name: src/resources/static/css/create_style.css
+  visible: true
+  text: |-
+    #input_and_submit {
+        margin-top: 30px;
+        margin-left: 20px;
+    }
+
+    #code_snippet {
+        font-size: large;
+        padding: 5px;
+        border: 1px solid #105fb3;
+    }
+
+    #send_snippet {
+        margin-top: 15px;
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/130/stages/696/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Fri, 05 Mar 2021 13:59:16 UTC
 record: -1

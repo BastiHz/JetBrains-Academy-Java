@@ -1,20 +1,25 @@
-#date_and_code {
-    margin-top: 30px;
+body {
     margin-left: 20px;
+    font-size: large;
+    font-family: monospace;
+    margin-top: 30px;
 }
 
 #load_date {
     color: #1c6b0c;
-    font-family: monospace;
-    font-size: large;
-    margin-left: 10px;
 }
 
 #code_snippet {
-    margin-top: 5px;
     background-color: #f0f0f0;
     border: 1px solid #105fb3;
-    padding: 10px;
-    font-size: large;
-    width: min-content;
+    width: 120ch;
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 30px;
+}
+
+#load_date,
+#views_restriction,
+#time_restriction {
+    padding-left: 10px;
 }

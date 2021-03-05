@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 @Entity
 public class Code {
@@ -17,28 +17,24 @@ public class Code {
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @JsonIgnore
+    private final String id = UUID.randomUUID().toString();
     @Type(type = "text")  // otherwise the column is varchar(255) which is too small
     private String code;
-    // The exercise tests require the date to be the same on the website
-    // and in the json for the api. That's why I simply use a String
-    // instead of LocalDateTime to store the date.
-    // FIXME: In the next stage I need the date for sorting. To do this it needs sub-second
-    //  accuracy, which is why I will store it as a LocalDateTime again.
-    // Idea: Use String date for the formatted date and LocalDateTime rawDate for the real date.
-    // And annotate the rawDate with JsonIgnore. This way it should be saved in the database
-    // but not returned in requests. Or see how it was done with that one field in Quiz.
-    private String date;
-
+    private final LocalDateTime date = LocalDateTime.now();
+    private int views;  // visible for this many views
+    private int time;  // visible for this many seconds
     @JsonIgnore
-    public int getId() {
+    private boolean viewRestricted = false;
+    @JsonIgnore
+    private boolean timeRestricted = false;
+
+    public String getId() {
         return id;
     }
 
     public void setCode(String code) {
         this.code = code;
-        date = LocalDateTime.now().format(dateTimeFormatter);
     }
 
     public String getCode() {
@@ -46,6 +42,51 @@ public class Code {
     }
 
     public String getDate() {
-        return date;
+        return date.format(dateTimeFormatter);
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+        if (views > 0) {
+            viewRestricted = true;
+        }
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public boolean isViewRestricted() {
+        return viewRestricted;
+    }
+
+    void updateViews() {
+        if (viewRestricted) {
+            views--;
+        }
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+        if (time > 0) {
+            timeRestricted = true;
+        }
+    }
+
+    public long getTime() {
+        if (timeRestricted) {
+            LocalDateTime timeLimit = date.plusSeconds(time);
+            return LocalDateTime.now().until(timeLimit, ChronoUnit.SECONDS);
+        }
+        return 0;
+    }
+
+    public boolean isTimeRestricted() {
+        return timeRestricted;
+    }
+
+    boolean isInaccessible() {
+        return viewRestricted && views <= 0
+            || timeRestricted && getTime() <= 0;
     }
 }
