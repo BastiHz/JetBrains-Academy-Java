@@ -33,7 +33,7 @@ public class Code {
         return id;
     }
 
-    public void setCode(String code) {
+    public void setCode(final String code) {
         this.code = code;
     }
 
@@ -45,7 +45,7 @@ public class Code {
         return date.format(dateTimeFormatter);
     }
 
-    public void setViews(int views) {
+    public void setViews(final int views) {
         this.views = views;
         if (views > 0) {
             viewRestricted = true;
@@ -66,7 +66,7 @@ public class Code {
         }
     }
 
-    public void setTime(int time) {
+    public void setTime(final int time) {
         this.time = time;
         if (time > 0) {
             timeRestricted = true;
@@ -75,8 +75,7 @@ public class Code {
 
     public long getTime() {
         if (timeRestricted) {
-            LocalDateTime timeLimit = date.plusSeconds(time);
-            return LocalDateTime.now().until(timeLimit, ChronoUnit.SECONDS);
+            return LocalDateTime.now().until(date.plusSeconds(time), ChronoUnit.SECONDS);
         }
         return 0;
     }

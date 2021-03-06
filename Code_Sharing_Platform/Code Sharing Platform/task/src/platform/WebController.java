@@ -14,13 +14,13 @@ public class WebController {
     private CodeService codeService;
 
     @GetMapping(path = "/code/{id}")
-    public String getCodeById(@PathVariable String id, Model model) {
+    public String getCodeById(@PathVariable final String id, final Model model) {
         model.addAttribute("code", codeService.getCodeById(id));
         return "code";
     }
 
     @GetMapping(path = "/code/latest")
-    public String getLatestCodes(Model model) {
+    public String getLatestCodes(final Model model) {
         model.addAttribute("codes", codeService.getLatestCodes());
         return "latest";
     }

@@ -15,7 +15,7 @@ public class ApiController {
     private CodeService codeService;
 
     @GetMapping(path = "/code/{id}")
-    public Code getCodeById(@PathVariable String id) {
+    public Code getCodeById(@PathVariable final String id) {
         return codeService.getCodeById(id);
     }
 
@@ -25,8 +25,8 @@ public class ApiController {
     }
 
     @PostMapping(path = "/code/new", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> addCode(@RequestBody Code Code) {
-        String id = codeService.addCode(Code);
+    public Map<String, String> addCode(@RequestBody final Code Code) {
+        final String id = codeService.addCode(Code);
         return Map.of("id", id);
     }
 }

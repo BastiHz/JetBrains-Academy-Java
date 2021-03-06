@@ -12,13 +12,13 @@ public class CodeService {
     @Autowired
     private CodeRepository codeRepository;
 
-    public String addCode(Code code) {
+    public String addCode(final Code code) {
         codeRepository.save(code);
         return code.getId();
     }
 
-    public Code getCodeById(String id) {
-        Code code = codeRepository.findById(id).orElseThrow();
+    public Code getCodeById(final String id) {
+        final Code code = codeRepository.findById(id).orElseThrow();
         if (code.isInaccessible()) {
             throw new NoSuchElementException();
         }
